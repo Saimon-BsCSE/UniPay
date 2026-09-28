@@ -1978,13 +1978,65 @@ details.faq-item[open] summary .faq-chevron {
     #e2e8f0 8px,
     #e2e8f0 16px
   );
-  height: 38px;
+  height: 42px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 0 12px;
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Card signature
+   --------------------------------------------------------------------------
+   Renders the holder's MAIN name only, in a handwriting face, as if signed on
+   the signature strip. The text is injected by renderCardSignature() in
+   app.js, which derives it from the backend full name.
+
+   A local cursive stack is used deliberately: no webfont request, so the
+   signature still renders on an offline lab machine.
+   -------------------------------------------------------------------------- */
+.card-signature-name {
+  font-family: 'Segoe Script', 'Bradley Hand', 'Brush Script MT', 'Snell Roundhand',
+    'Lucida Handwriting', 'URW Chancery L', 'Apple Chancery', cursive;
+  font-size: 21px;
+  line-height: 1.1;
+  font-style: italic;
+  color: #0b2a6b;
+  transform: rotate(-2.5deg);
+  transform-origin: left center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 62%;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+  user-select: none;
+}
+
+/* --------------------------------------------------------------------------
+   Card back phone chip
+   --------------------------------------------------------------------------
+   Must stay dark-on-white in BOTH themes. It carries no Tailwind colour
+   utility on purpose: the blanket `body.dark-theme .text-slate-900:not(#view-auth *)`
+   rules carry ID-level specificity from :not(#view-auth *) and were beating
+   the old #card-cvv-display rule, painting near-white text onto a white chip
+   (contrast 1.05) in dark mode.
+   -------------------------------------------------------------------------- */
+.card-cvv-chip {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: 5px;
+  border: 1px solid #cbd5e1;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.12);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* Profile Photo Uploader */
@@ -2693,7 +2745,8 @@ body.dark-theme .txn-ico.out:not(#view-auth *) {
 }
 
 #card-cvv-display,
-#vendor-card-cvv-display {
+#vendor-card-cvv-display,
+.card-cvv-chip {
   background-color: #ffffff !important;
   color: #0f172a !important;
   font-weight: 800 !important;

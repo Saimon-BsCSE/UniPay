@@ -1705,11 +1705,57 @@
     }
   }
 
+  /* ------------------------------------------------------------------
+   * Card signature name
+   * ------------------------------------------------------------------
+   * A card is signed with the holder's MAIN name only -- never the full
+   * name, and the user is never asked to supply or confirm it. It is
+   * derived automatically from the full name the backend already returns.
+   *
+   *   "Md Saimon Islam (Verified)"  -> "Saimon"
+   *   "Dr. Nafees Ahmed"            -> "Nafees"
+   *   "Osama Bin Mansur"            -> "Osama"
+   *
+   * Leading honorifics/titles are skipped so "Md" and "Dr." are never
+   * treated as the name, and any parenthesised suffix such as
+   * "(Verified)" is discarded before splitting.
+   */
+  const SIGNATURE_SKIP_TOKENS = new Set([
+    'md', 'mst', 'dr', 'prof', 'mr', 'mrs', 'ms', 'miss', 'mx',
+    'begum', 'engr', 'eng', 'arch', 'capt', 'sir', 'mohammad',
+    'mohammed', 'muhammad', 'abdul', 'sheikh', 'sk'
+  ]);
+
+  function signatureName(fullName) {
+    if (!fullName) return '';
+    // Drop parenthesised suffixes, e.g. "(Verified)".
+    const cleaned = String(fullName).replace(/[([{][^)\]}]*[)\]}]/g, ' ').trim();
+    // Split on any run of separators: spaces, dots, dashes, underscores.
+    const tokens = cleaned.split(/[\s._\-/]+/).filter(Boolean);
+    for (const token of tokens) {
+      const letters = token.replace(/[^\p{L}\p{N}]/gu, '');
+      if (!letters) continue;
+      if (SIGNATURE_SKIP_TOKENS.has(letters.toLowerCase())) continue;
+      return letters.charAt(0).toUpperCase() + letters.slice(1);
+    }
+    return '';
+  }
+
+  /** Writes the auto-derived signature onto a card back. Safe to call repeatedly. */
+  function renderCardSignature(elementId, fullName) {
+    const el = $(elementId);
+    if (!el) return;
+    const name = signatureName(fullName);
+    el.textContent = name || '—';
+    el.title = name ? ('Signed electronically as ' + name) : 'Signature unavailable';
+  }
+
   function update3DCardBack(phone) {
     const cvvEl = $('card-cvv-display');
     if (!cvvEl) return;
     const num = (phone || (API.user && API.user.phoneNumber) || '017XXXXXXXX').trim();
     cvvEl.textContent = num;
+    renderCardSignature('card-signature-name', API.user && API.user.fullName);
   }
 
   /* ==================== VENDOR 3D SMART CARD INTERACTIVITY ================ */
@@ -1802,6 +1848,7 @@
     if (!cvvEl) return;
     const num = (phone || (API.user && API.user.phoneNumber) || '017XXXXXXXX').trim();
     cvvEl.textContent = num;
+    renderCardSignature('vendor-card-signature-name', API.user && API.user.fullName);
   }
 
   /* ==================== TWO-STEP OTP CASH-IN FLOW ======================== */
