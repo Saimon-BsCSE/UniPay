@@ -827,6 +827,90 @@ body:not(.dark-theme) .toast.error:not(#view-auth *) {
   100% { transform: translateY(0) scale(1); opacity: 1; }
 }
 
+/* --------------------------------------------------------------------------
+   History expand/collapse toggle
+   --------------------------------------------------------------------------
+   Sits beside each refresh control. Hidden entirely (via Tailwind's .hidden)
+   when the list already fits inside the 4-row preview, so it only appears
+   when there is genuinely more history to reveal.
+
+   Colours are set here rather than with a Tailwind colour utility on purpose:
+   the blanket `body.dark-theme .text-slate-*:not(#view-auth *)` overrides in
+   this stylesheet would otherwise win the cascade for the same reason the
+   old card-back phone chip went invisible in dark mode.
+   -------------------------------------------------------------------------- */
+.history-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  padding: 6px 11px;
+  border-radius: 9999px;
+  border: 1px solid rgba(242, 101, 34, 0.45);
+  background-color: rgba(242, 101, 34, 0.08);
+  /* Darker than the brand #F26522: the label is 11px bold, which is small
+     text for WCAG and needs 4.5:1. #B03A0A measures 5.33:1 here. */
+  color: #b03a0a;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.history-toggle:hover {
+  background-color: rgba(242, 101, 34, 0.16);
+  border-color: rgba(242, 101, 34, 0.7);
+}
+.history-toggle:active { transform: translateY(1px); }
+.history-toggle:focus-visible {
+  outline: 2px solid #f26522;
+  outline-offset: 2px;
+}
+
+/* Tailwind's own `.hidden` is a single class, the same specificity as
+   `.history-toggle` above, so hiding this button would otherwise depend on
+   which stylesheet happens to be injected last. Be explicit instead. */
+.history-toggle.hidden { display: none; }
+
+/* Open state: the button now closes the list, so it reads as pressed.
+   #C2410C keeps white text at 5.18:1, where the brand orange only reached
+   3.15:1. */
+.history-toggle[aria-expanded='true'] {
+  background-color: #c2410c;
+  border-color: #c2410c;
+  color: #ffffff;
+}
+.history-toggle[aria-expanded='true']:hover {
+  background-color: #9a3412;
+  border-color: #9a3412;
+}
+
+body.dark-theme .history-toggle {
+  border-color: rgba(251, 146, 60, 0.5);
+  background-color: rgba(251, 146, 60, 0.14);
+  color: #fdba74;
+}
+body.dark-theme .history-toggle:hover {
+  background-color: rgba(251, 146, 60, 0.24);
+  border-color: rgba(251, 146, 60, 0.8);
+}
+body.dark-theme .history-toggle[aria-expanded='true'] {
+  background-color: #c2410c;
+  border-color: #c2410c;
+  color: #ffffff;
+}
+body.dark-theme .history-toggle[aria-expanded='true']:hover {
+  background-color: #9a3412;
+  border-color: #9a3412;
+}
+
+/* On the narrowest phones the header row has the title, the toggle and the
+   refresh control competing for room, so shrink the toggle a little. */
+@media (max-width: 380px) {
+  .history-toggle { font-size: 10px; padding: 5px 9px; }
+}
+
 /* Transactions list */
 .txn-row {
   display: flex;

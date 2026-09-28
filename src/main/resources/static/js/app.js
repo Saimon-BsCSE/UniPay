@@ -383,15 +383,84 @@
     } catch (err) { if (err.status !== 401) toast('Error', err.message, true); }
   }
 
+  /* ------------------------------------------------------------------
+   * Collapsible history lists
+   * ------------------------------------------------------------------
+   * Every history list (Recent Transactions, Payments Received, Cash-Out
+   * History) previews only the 4 most recent entries. The button beside
+   * each refresh control toggles between that preview and the complete
+   * history, so one button both opens and closes full history.
+   *
+   * Rows are cached per list, so toggling is instant and costs no request,
+   * and the expanded/collapsed choice survives re-renders -- refreshing
+   * never silently collapses a list the user deliberately opened.
+   */
+  const HISTORY_PREVIEW_COUNT = 4;
+  const historyExpanded = {};
+  const historyCache = {};
+  const HISTORY_TOGGLE_BTN = {
+    'user-history': 'btn-toggle-history',
+    'vendor-history': 'btn-toggle-vhistory',
+    'vendor-cashout-list': 'btn-toggle-cashouts'
+  };
+
+  function historyRows(data) {
+    const rows = Array.isArray(data) ? data : (data && Array.isArray(data.content) ? data.content : []);
+    return Array.isArray(rows) ? rows : [];
+  }
+
+  /** Stores freshly loaded rows for a list, then repaints it. */
+  function paintHistory(containerId, rowHtmls, emptyHtml) {
+    historyCache[containerId] = { rowHtmls, emptyHtml, total: rowHtmls.length };
+    repaintHistory(containerId);
+  }
+
+  /** Repaints a list from cache, honouring the 4-row preview / full toggle. */
+  function repaintHistory(containerId) {
+    const box = $(containerId);
+    if (!box) return;
+    const cache = historyCache[containerId];
+    if (!cache) return;
+    if (!cache.total) {
+      box.innerHTML = cache.emptyHtml;
+    } else {
+      const rows = historyExpanded[containerId]
+        ? cache.rowHtmls
+        : cache.rowHtmls.slice(0, HISTORY_PREVIEW_COUNT);
+      box.innerHTML = rows.join('');
+    }
+    syncHistoryToggle(containerId);
+  }
+
+  function syncHistoryToggle(containerId) {
+    const btnId = HISTORY_TOGGLE_BTN[containerId];
+    const btn = btnId ? $(btnId) : null;
+    if (!btn) return;
+    const total = (historyCache[containerId] || {}).total || 0;
+    const expanded = !!historyExpanded[containerId];
+    // Nothing to reveal when the whole list already fits inside the preview.
+    btn.classList.toggle('hidden', total <= HISTORY_PREVIEW_COUNT);
+    btn.setAttribute('aria-expanded', String(expanded));
+    btn.textContent = expanded
+      ? 'close full history'
+      : 'view full history (' + total + ')';
+  }
+
+  function toggleHistoryFull(containerId) {
+    const total = (historyCache[containerId] || {}).total || 0;
+    if (total <= HISTORY_PREVIEW_COUNT) return;
+    historyExpanded[containerId] = !historyExpanded[containerId];
+    repaintHistory(containerId);
+  }
+
   function renderHistory(containerId, data) {
     const box = $(containerId);
     if (!box) return;
-    const rows = Array.isArray(data) ? data : (data && Array.isArray(data.content) ? data.content : []);
-    if (!rows || !rows.length) {
-      box.innerHTML = '<p class="text-sm text-slate-400 py-6 text-center">No transactions yet.</p>';
-      return;
-    }
-    box.innerHTML = rows.map(txnRowHtml).join('');
+    paintHistory(
+      containerId,
+      historyRows(data).map(txnRowHtml),
+      '<p class="text-sm text-slate-400 py-6 text-center">No transactions yet.</p>'
+    );
   }
 
   function txnRowHtml(t) {
@@ -1260,35 +1329,40 @@
     openModal('modal-cashout');
   }
 
+  function cashoutRowHtml(c) {
+    const channelIcons = { BKASH: '📱', NAGAD: '🟢', ROCKET: '🚀', BANK: '🏦', OTHER: '💳' };
+    const icon = channelIcons[c.channel] || '💸';
+    const statusBadge = c.status === 'COMPLETED'
+      ? '<span class="badge-pill badge-settled">✅ Completed</span>'
+      : (c.status === 'PENDING'
+        ? '<span class="badge-pill badge-pending">⏳ Processing</span>'
+        : '<span class="badge-pill badge-declined">❌ Failed</span>');
+    return `
+      <div class="txn-row">
+        <div class="txn-ico out" style="background:#d1fae5;color:#059669;">${icon}</div>
+        <div class="txn-meta">
+          <div class="txn-name flex items-center gap-2">${esc(c.channel)} Cash-Out ${statusBadge}</div>
+          <div class="txn-sub">${fullTimestamp(c.requestedAt)} · To: ${esc(c.destination || c.accountNumber || '—')}</div>
+        </div>
+        <div class="txn-amt out">−${taka(c.amount)}</div>
+      </div>`;
+  }
+
   async function loadCashoutHistory() {
-    const list = $('vendor-cashout-list');
-    if (!list) return;
+    if (!$('vendor-cashout-list')) return;
     try {
       const cashouts = await API.call('/api/vendor/cashouts');
-      if (!cashouts || !cashouts.length) {
-        list.innerHTML = '<p class="text-sm text-slate-400 py-6 text-center">No cash-outs yet. Tap "Cash Out" above to withdraw earnings.</p>';
-        return;
-      }
-      list.innerHTML = cashouts.map(c => {
-        const channelIcons = { BKASH: '📱', NAGAD: '🟢', ROCKET: '🚀', BANK: '🏦', OTHER: '💳' };
-        const icon = channelIcons[c.channel] || '💸';
-        const statusBadge = c.status === 'COMPLETED'
-          ? '<span class="badge-pill badge-settled">✅ Completed</span>'
-          : (c.status === 'PENDING'
-            ? '<span class="badge-pill badge-pending">⏳ Processing</span>'
-            : '<span class="badge-pill badge-declined">❌ Failed</span>');
-        return `
-          <div class="txn-row">
-            <div class="txn-ico out" style="background:#d1fae5;color:#059669;">${icon}</div>
-            <div class="txn-meta">
-              <div class="txn-name flex items-center gap-2">${esc(c.channel)} Cash-Out ${statusBadge}</div>
-              <div class="txn-sub">${fullTimestamp(c.requestedAt)} · To: ${esc(c.destination || c.accountNumber || '—')}</div>
-            </div>
-            <div class="txn-amt out">−${taka(c.amount)}</div>
-          </div>`;
-      }).join('');
+      paintHistory(
+        'vendor-cashout-list',
+        (Array.isArray(cashouts) ? cashouts : []).map(cashoutRowHtml),
+        '<p class="text-sm text-slate-400 py-6 text-center">No cash-outs yet. Tap "Cash Out" above to withdraw earnings.</p>'
+      );
     } catch (err) {
-      list.innerHTML = '<p class="text-sm text-slate-400 py-6 text-center">Could not load cash-out history.</p>';
+      paintHistory(
+        'vendor-cashout-list',
+        [],
+        '<p class="text-sm text-slate-400 py-6 text-center">Could not load cash-out history.</p>'
+      );
     }
   }
 
@@ -2824,6 +2898,11 @@
       spinRefreshIcon($('btn-refresh-cashouts'));
       loadCashoutHistory();
     });
+
+    // History expand/collapse: 4 recent rows by default, full list on demand.
+    $('btn-toggle-history')   && ($('btn-toggle-history').onclick   = () => toggleHistoryFull('user-history'));
+    $('btn-toggle-vhistory')  && ($('btn-toggle-vhistory').onclick  = () => toggleHistoryFull('vendor-history'));
+    $('btn-toggle-cashouts')  && ($('btn-toggle-cashouts').onclick  = () => toggleHistoryFull('vendor-cashout-list'));
 
     // Vendor action card buttons
     $('btn-vendor-cashout') && ($('btn-vendor-cashout').onclick = openCashoutModal);

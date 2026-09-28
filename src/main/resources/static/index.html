@@ -33,7 +33,7 @@
   <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.js"></script>
   <!-- In-browser camera QR scanning -->
   <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <link rel="stylesheet" href="/css/style.css?v=8">
+  <link rel="stylesheet" href="/css/style.css?v=9">
   <script>
     // Applied here (in <head>) so <html> is themed before first paint.
     // <body> does not exist yet at this point, so its class is set by the
@@ -1487,12 +1487,16 @@
 
         <!-- ====================== RECENT TRANSACTIONS ====================== -->
         <div class="glass-panel rounded-3xl p-6">
-          <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center justify-between gap-3 mb-4">
             <h3 class="font-extrabold text-base text-slate-900">Recent Transactions</h3>
-            <button id="btn-refresh-history"
-              class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
-              <span>↻</span> refresh
-            </button>
+            <div class="flex items-center gap-3 shrink-0">
+              <button id="btn-toggle-history" type="button" class="history-toggle hidden" aria-expanded="false"
+                aria-controls="user-history">view full history</button>
+              <button id="btn-refresh-history"
+                class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                <span>↻</span> refresh
+              </button>
+            </div>
           </div>
           <div id="user-history" class="divide-y divide-slate-100">
             <p class="text-sm text-slate-400 py-6 text-center">No transactions yet.</p>
@@ -1892,15 +1896,19 @@
 
         <!-- Cash-Out History Card -->
         <div class="glass-panel rounded-3xl p-6">
-          <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center justify-between gap-3 mb-4">
             <div>
               <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">💸 Cash-Out History</h3>
               <p class="text-xs text-slate-400 mt-0.5">All withdrawal transactions from your wallet</p>
             </div>
-            <button id="btn-refresh-cashouts"
-              class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
-              <span>↻</span> refresh
-            </button>
+            <div class="flex items-center gap-3 shrink-0">
+              <button id="btn-toggle-cashouts" type="button" class="history-toggle hidden" aria-expanded="false"
+                aria-controls="vendor-cashout-list">view full history</button>
+              <button id="btn-refresh-cashouts"
+                class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                <span>↻</span> refresh
+              </button>
+            </div>
           </div>
           <div id="vendor-cashout-list" class="divide-y divide-slate-100">
             <p class="text-sm text-slate-400 py-6 text-center">No cash-outs yet. Tap "Cash Out" above to withdraw
@@ -1910,12 +1918,16 @@
 
         <!-- Payments Received -->
         <div class="glass-panel rounded-3xl p-6">
-          <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center justify-between gap-3 mb-4">
             <h3 class="font-extrabold text-base">Payments Received</h3>
-            <button id="btn-refresh-vhistory"
-              class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
-              <span>↻</span> refresh
-            </button>
+            <div class="flex items-center gap-3 shrink-0">
+              <button id="btn-toggle-vhistory" type="button" class="history-toggle hidden" aria-expanded="false"
+                aria-controls="vendor-history">view full history</button>
+              <button id="btn-refresh-vhistory"
+                class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+                <span>↻</span> refresh
+              </button>
+            </div>
           </div>
           <div id="vendor-history" class="divide-y divide-slate-100">
             <p class="text-sm text-slate-400 py-6 text-center">No payments yet.</p>
@@ -2654,10 +2666,10 @@
     browser can never serve a stale copy (a very common reason a fix looks
     "not applied"). Combined with the no-store headers in application.yml.
   -->
-  <script src="/js/api.js?v=8"></script>
-  <script src="/js/sound.js?v=8"></script>
-  <script src="/js/ws.js?v=8"></script>
-  <script src="/js/app.js?v=8"></script>
+  <script src="/js/api.js?v=9"></script>
+  <script src="/js/sound.js?v=9"></script>
+  <script src="/js/ws.js?v=9"></script>
+  <script src="/js/app.js?v=9"></script>
 </body>
 
 </html>
