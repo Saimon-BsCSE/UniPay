@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: unipay-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: unipay
+      MYSQL_USER: unipay
+      MYSQL_PASSWORD: unipay
+    ports:
+      - "3306:3306"
+    volumes:
+      - unipay-mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uunipay", -punipay"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  unipay-mysql-data:

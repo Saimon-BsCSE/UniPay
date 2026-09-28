@@ -1,0 +1,41 @@
+# Normalise line endings so the repository is identical on every platform.
+# Without this, a Windows checkout can hand you a CRLF `mvnw`, which Linux/macOS
+# and WSL reject with "/bin/sh^M: bad interpreter".
+* text=auto eol=lf
+
+# --- Files that MUST stay LF (POSIX scripts) -------------------------------
+mvnw      text eol=lf
+*.sh      text eol=lf
+
+# --- Files that MUST be CRLF (Windows batch) --------------------------------
+*.cmd     text eol=crlf
+*.bat     text eol=crlf
+
+# --- Explicitly text -------------------------------------------------------
+*.java    text eol=lf
+*.xml     text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.sql     text eol=lf
+*.html    text eol=lf
+*.css     text eol=lf
+*.js      text eol=lf
+*.svg     text eol=lf
+*.md      text eol=lf
+*.properties text eol=lf
+.gitignore  text eol=lf
+.gitattributes text eol=lf
+
+# --- Binary: never touched by line-ending conversion ----------------------
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.ico     binary
+*.webp    binary
+*.pdf     binary
+*.jar     binary
+*.war     binary
+*.zip     binary
+*.class   binary
+*.db      binary

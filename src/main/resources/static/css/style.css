@@ -1,0 +1,3355 @@
+/* ==========================================================================
+   UniPay — United International University (UIU) Enclosed Digital Campus Wallet
+   Brand Identity: UIU Orange (#F26522) & Deep Navy (#0B132B / #1E293B)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --uiu-orange: #F26522;
+  --uiu-orange-dark: #D94F0E;
+  --uiu-orange-light: #FFF7ED;
+  --uiu-orange-glow: rgba(242, 101, 34, 0.25);
+  --uiu-navy: #0B132B;
+  --uiu-navy-card: #141E33;
+  --uiu-slate: #1E293B;
+  --uiu-emerald: #10B981;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1e293b;
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(ellipse at 10% 12%, rgba(242, 101, 34, 0.12) 0px, transparent 50%),
+    radial-gradient(ellipse at 90% 18%, rgba(56, 189, 248, 0.1) 0px, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(242, 101, 34, 0.08) 0px, transparent 60%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Glassmorphism Core Utility System - Enhanced Light Mode
+   ========================================================================== */
+.glass-header {
+  background: rgba(11, 19, 43, 0.82) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 
+    0 20px 40px -12px rgba(15, 23, 42, 0.08),
+    0 4px 12px rgba(15, 23, 42, 0.04),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+body.dark-theme .glass-panel:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    0 16px 36px -8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9 !important;
+}
+
+body:not(.dark-theme) .glass-panel:hover:not(#view-auth *) {
+  box-shadow: 
+    0 24px 48px -12px rgba(15, 23, 42, 0.1),
+    0 8px 16px rgba(15, 23, 42, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95);
+  border-color: rgba(242, 101, 34, 0.2) !important;
+}
+
+body.dark-theme .glass-dark-panel:not(#view-auth *) {
+  background: linear-gradient(135deg, rgba(2, 6, 23, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body:not(.dark-theme) .glass-dark-panel:not(#view-auth *) {
+  background: linear-gradient(135deg, rgba(11, 19, 43, 0.92) 0%, rgba(20, 30, 51, 0.88) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  box-shadow: 
+    0 20px 40px -10px rgba(11, 19, 43, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.15);
+}
+
+/* Enhanced light mode card action buttons */
+body:not(.dark-theme) .card-action:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1.5px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 
+    0 12px 28px -8px rgba(15, 23, 42, 0.08),
+    0 2px 8px rgba(15, 23, 42, 0.04),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+}
+
+body:not(.dark-theme) .card-action:hover:not(#view-auth *) {
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: rgba(242, 101, 34, 0.3) !important;
+  box-shadow: 
+    0 20px 40px -10px rgba(242, 101, 34, 0.15),
+    0 4px 12px rgba(15, 23, 42, 0.06),
+    inset 0 1px 2px rgba(255, 255, 255, 1) !important;
+  transform: translateY(-4px);
+}
+
+body:not(.dark-theme) .card-action .card-icon-wrap {
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%) !important;
+  border: 1px solid rgba(254, 215, 170, 0.8) !important;
+  color: #f26522 !important;
+  box-shadow: 0 4px 12px rgba(242, 101, 34, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+}
+
+body:not(.dark-theme) .card-action:hover .card-icon-wrap {
+  box-shadow: 0 6px 16px rgba(242, 101, 34, 0.25) !important;
+  transform: scale(1.1);
+}
+
+/* UI Form Inputs & Labels */
+.lbl {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.inp {
+  width: 100%;
+  padding: 11px 15px;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s, box-shadow 0.18s, background-color 0.18s;
+}
+
+.inp:focus {
+  border-color: #F26522;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.18);
+  background: #fff;
+}
+
+body.dark-theme .inp:not(#view-auth *) {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .inp:focus:not(#view-auth *) {
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.25) !important;
+}
+
+body.dark-theme .lbl:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+/* Primary UIU Brand Button */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #FF782E 0%, #F26522 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(242, 101, 34, 0.28);
+  transition: transform 0.12s, box-shadow 0.15s, opacity 0.15s;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #FF8540 0%, #E05310 100%);
+  box-shadow: 0 6px 18px rgba(242, 101, 34, 0.38);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: #cbd5e1;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Ghost / Secondary Buttons */
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 11px 18px;
+  border-radius: 14px;
+  background: #f1f5f9;
+  color: #334155;
+  font-weight: 700;
+  font-size: 14px;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-ghost:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+body.dark-theme .btn-ghost:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-theme .btn-ghost:hover:not(#view-auth *) {
+  background: rgba(51, 65, 85, 0.9) !important;
+  color: #ffffff !important;
+}
+
+.btn-success {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #10b981;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transition: background 0.15s, transform 0.12s;
+}
+
+.btn-success:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #ef4444;
+  font-weight: 700;
+  font-size: 13px;
+  border: 1px solid #fecaca;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-danger:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Navigation Tabs & Auth Switcher */
+.auth-card-panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 
+    0 25px 60px -15px rgba(15, 23, 42, 0.12),
+    inset 0 1px 2px rgba(255, 255, 255, 1);
+}
+
+.auth-tab-container {
+  background: rgba(241, 245, 249, 0.9);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.auth-tab {
+  color: #64748b;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-tab:hover {
+  color: #0f172a;
+}
+
+.auth-tab.active {
+  background: #ffffff;
+  color: #F26522;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.qr-mode {
+  color: #64748b;
+  transition: all 0.15s;
+}
+.qr-mode.active {
+  background: #ffffff;
+  color: #F26522;
+  font-weight: 800;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+/* Action Cards with Glassmorphism */
+.card-action {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-height: 145px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(16px) saturate(170%);
+  -webkit-backdrop-filter: blur(16px) saturate(170%);
+  border-radius: 24px;
+  padding: 18px 16px;
+  cursor: pointer;
+  box-shadow: 
+    0 10px 24px -6px rgba(15, 23, 42, 0.04),
+    0 1px 2px 0 rgba(15, 23, 42, 0.02),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
+  border: 1.5px solid rgba(255, 255, 255, 0.82);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s, border-color 0.2s, background 0.2s;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark-theme .card-action:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.78) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.dark-theme .card-action:hover:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.90) !important;
+  border-color: rgba(242, 101, 34, 0.5) !important;
+  box-shadow: 0 18px 36px -8px rgba(242, 101, 34, 0.25) !important;
+}
+
+body.dark-theme .card-action span {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .card-action small {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .card-action .card-icon-wrap {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(242, 101, 34, 0.35) !important;
+}
+
+.card-action:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 
+    0 18px 36px -8px rgba(242, 101, 34, 0.18),
+    0 2px 6px rgba(15, 23, 42, 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 1);
+  border-color: rgba(254, 215, 170, 0.9);
+}
+
+.card-action .card-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  margin-bottom: 8px;
+  background: rgba(255, 247, 237, 0.95);
+  color: #F26522;
+  box-shadow: 0 4px 12px rgba(242, 101, 34, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(254, 215, 170, 0.6);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
+}
+
+.card-action:hover .card-icon-wrap {
+  transform: scale(1.08);
+  box-shadow: 0 6px 16px rgba(242, 101, 34, 0.25);
+}
+
+.card-action span {
+  font-weight: 800;
+  font-size: 15px;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+}
+
+.card-action small {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+/* Badges & Status Pills */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-pending {
+  background: #FFFBEB;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.badge-accepted {
+  background: #ECFDF5;
+  color: #059669;
+  border: 1px solid #A7F3D0;
+}
+
+.badge-declined {
+  background: #FEF2F2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.badge-settled {
+  background: #F0FDF4;
+  color: #16A34A;
+  border: 1px solid #BBF7D0;
+}
+
+.badge-active {
+  background: #FFF7ED;
+  color: #EA580C;
+  border: 1px solid #FFEDD5;
+}
+
+/* ==========================================================================
+   Modal Dialog Lifecycle Transitions
+   ========================================================================== */
+#modal-backdrop {
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  pointer-events: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(6, 10, 23, 0.68) !important;
+}
+#modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal {
+  position: fixed;
+  z-index: 50;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 92%;
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-radius: 28px;
+  padding: 26px;
+  box-shadow: 
+    0 30px 60px -10px rgba(15, 23, 42, 0.2),
+    0 10px 30px rgba(15, 23, 42, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset,
+    0 1px 2px rgba(255, 255, 255, 1) inset;
+  border: 1.5px solid rgba(226, 232, 240, 0.9);
+  max-height: 90vh;
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-theme .modal:not(#view-auth *) {
+  background: rgba(11, 19, 43, 0.96) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65) !important;
+  color: #f1f5f9 !important;
+}
+
+body:not(.dark-theme) .modal:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1.5px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 
+    0 30px 60px -10px rgba(15, 23, 42, 0.25),
+    0 10px 30px rgba(15, 23, 42, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.95) inset,
+    0 1px 2px rgba(255, 255, 255, 1) inset;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .modal h1,
+body:not(.dark-theme) .modal h2,
+body:not(.dark-theme) .modal h3,
+body:not(.dark-theme) .modal h4,
+body:not(.dark-theme) .modal .font-extrabold,
+body:not(.dark-theme) .modal .font-bold {
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .modal .text-slate-400,
+body:not(.dark-theme) .modal .text-slate-500,
+body:not(.dark-theme) .modal .text-slate-600 {
+  color: #475569 !important;
+}
+
+/* Preserve semantic text colors inside modals (success/error/brand) */
+body:not(.dark-theme) .modal .text-emerald-600,
+body:not(.dark-theme) .modal .text-emerald-700,
+body:not(.dark-theme) .modal .text-emerald-800 {
+  color: #047857 !important;
+}
+body:not(.dark-theme) .modal .text-red-500,
+body:not(.dark-theme) .modal .text-red-600,
+body:not(.dark-theme) .modal .text-red-700 {
+  color: #dc2626 !important;
+}
+body:not(.dark-theme) .modal .text-brand-500,
+body:not(.dark-theme) .modal .text-brand-600,
+body:not(.dark-theme) .modal .text-brand-700 {
+  color: #c2410c !important;
+}
+body:not(.dark-theme) .modal .text-amber-600,
+body:not(.dark-theme) .modal .text-amber-700 {
+  color: #b45309 !important;
+}
+body:not(.dark-theme) .modal .text-blue-600,
+body:not(.dark-theme) .modal .text-blue-700 {
+  color: #1d4ed8 !important;
+}
+body:not(.dark-theme) .modal .text-slate-700,
+body:not(.dark-theme) .modal .text-slate-800,
+body:not(.dark-theme) .modal .text-slate-900 {
+  color: #1e293b !important;
+}
+
+/* Semantic background tints must not all collapse to orange */
+body:not(.dark-theme) .bg-emerald-50:not(#view-auth *) {
+  background-color: #ecfdf5 !important;
+}
+body:not(.dark-theme) .bg-red-50:not(#view-auth *),
+body:not(.dark-theme) .bg-rose-50:not(#view-auth *) {
+  background-color: #fef2f2 !important;
+}
+body:not(.dark-theme) .bg-blue-50:not(#view-auth *) {
+  background-color: #eff6ff !important;
+}
+body:not(.dark-theme) .bg-amber-50:not(#view-auth *),
+body:not(.dark-theme) .bg-yellow-50:not(#view-auth *) {
+  background-color: #fffbeb !important;
+}
+body:not(.dark-theme) .bg-purple-50:not(#view-auth *) {
+  background-color: #faf5ff !important;
+}
+body:not(.dark-theme) .bg-slate-50:not(#view-auth *),
+body:not(.dark-theme) .bg-slate-100:not(#view-auth *) {
+  background-color: #f8fafc !important;
+}
+body:not(.dark-theme) .bg-slate-200:not(#view-auth *) {
+  background-color: #e2e8f0 !important;
+}
+
+.modal.max-w-lg {
+  max-width: 520px;
+}
+.modal.max-w-md {
+  max-width: 460px;
+}
+.modal.modal-enter {
+  opacity: 0;
+  transform: translate(-50%, -46%) scale(0.95);
+}
+.modal.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+.modal.modal-leave {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -47%) scale(0.96);
+}
+
+/* ==========================================================================
+   Toasts & Alerts (Smooth Stacking & Collapse) - Enhanced Light Mode
+   ========================================================================== */
+.toast {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 
+    0 20px 40px -10px rgba(15, 23, 42, 0.2),
+    0 4px 12px rgba(15, 23, 42, 0.1);
+  border-left: 4px solid #F26522;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  position: relative;
+  overflow: hidden;
+  max-height: 160px;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              margin 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              padding 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-theme .toast:not(#view-auth *) {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .toast .t-title {
+  color: #ffffff !important;
+}
+
+body.dark-theme .toast .t-msg {
+  color: #cbd5e1 !important;
+}
+
+body:not(.dark-theme) .toast:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
+  box-shadow: 
+    0 20px 40px -10px rgba(15, 23, 42, 0.2),
+    0 4px 12px rgba(15, 23, 42, 0.1);
+}
+
+body:not(.dark-theme) .toast .t-title {
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .toast .t-msg {
+  color: #475569 !important;
+}
+
+body:not(.dark-theme) .toast.success:not(#view-auth *) {
+  border-left-color: #10b981 !important;
+}
+
+body:not(.dark-theme) .toast.error:not(#view-auth *) {
+  border-left-color: #ef4444 !important;
+}
+
+.toast.error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast.success {
+  border-left: 4px solid #10b981;
+}
+
+.toast .t-title {
+  font-weight: 800;
+  font-size: 13px;
+  color: #0f172a;
+}
+
+.toast .t-msg {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+.toast .t-close {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  line-height: 1;
+  transition: color 0.15s;
+}
+.toast .t-close:hover {
+  color: #1e293b;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.toast.toast-out {
+  opacity: 0;
+  transform: translateX(50px) scale(0.92);
+  max-height: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-width: 0;
+}
+
+/* ==========================================================================
+   Smooth View & Tab Transitions
+   ========================================================================== */
+.view-enter {
+  animation: viewFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes viewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-fade-enter {
+  animation: tabFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Step Wizard Transitions */
+.wizard-slide-right {
+  animation: slideRight 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.wizard-slide-left {
+  animation: slideLeft 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Spinner & Button Loading Indicator */
+.btn-spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.65s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin-refresh {
+  display: inline-block;
+  animation: spin 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Error banner gentle shake */
+.error-shake {
+  animation: errorPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes errorPop {
+  0% { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  50% { transform: translateY(2px); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* POS Banner */
+#pos-banner {
+  display: flex;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: pop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#pos-banner.hidden {
+  display: none;
+}
+#pos-banner.banner-out {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.97);
+}
+@keyframes pop {
+  0% { transform: translateY(-8px) scale(0.96); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Transactions list */
+.txn-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 4px;
+  transition: background 0.12s;
+}
+
+.txn-ico {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+}
+
+.txn-ico.in {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.txn-ico.out {
+  background: #FFF7ED;
+  color: #EA580C;
+}
+
+.txn-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.txn-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.txn-sub {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.txn-amt {
+  font-weight: 800;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.txn-amt.in {
+  color: #059669;
+}
+
+.txn-amt.out {
+  color: #1e293b;
+}
+
+body.dark-theme .txn-row:not(#view-auth *) {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .txn-row:hover:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+body.dark-theme .txn-name:not(#view-auth *) {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .txn-sub:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .txn-amt.out:not(#view-auth *) {
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .txn-amt.in:not(#view-auth *) {
+  color: #34d399 !important;
+}
+
+body.dark-theme .txn-ico.in:not(#view-auth *) {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+body.dark-theme .txn-ico.out:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.16) !important;
+  color: #fb923c !important;
+  border: 1px solid rgba(242, 101, 34, 0.3) !important;
+}
+
+/* SplitPay progress bar */
+.split-progress-bg {
+  height: 7px;
+  background: #f1f5f9;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.split-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #F26522, #10B981);
+  border-radius: 9999px;
+  transition: width 0.35s ease;
+}
+
+body.dark-theme .split-progress-bg:not(#view-auth *) {
+  background: rgba(51, 65, 85, 0.6) !important;
+}
+
+/* UIU Monogram SVG */
+.uiu-badge-glow {
+  box-shadow: 0 0 20px rgba(242, 101, 34, 0.4);
+}
+
+/* Cashout channel card button */
+.cashout-channel-btn {
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+
+.cashout-channel-btn:hover {
+  transform: translateY(-2px);
+}
+
+.cashout-channel-btn.border-emerald-500 {
+  background: #f0fdf4;
+  border-color: #10b981;
+}
+
+/* MFS Provider & Cashout Logos */
+.mfs-provider-logo {
+  height: 28px;
+  width: auto;
+  max-width: 80px;
+  object-fit: contain;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.04));
+  transition: transform 0.15s ease;
+}
+
+.provider-btn:hover .mfs-provider-logo {
+  transform: scale(1.06);
+}
+
+.cashout-channel-logo {
+  height: 26px;
+  width: auto;
+  max-width: 80px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.04));
+  transition: transform 0.15s ease;
+}
+
+.cashout-channel-btn:hover .cashout-channel-logo {
+  transform: scale(1.06);
+}
+
+/* Brand Highlights for Selection */
+.provider-btn.border-bkash,
+.cashout-channel-btn.border-bkash {
+  border-color: #e2136e !important;
+  background-color: #fdf2f7 !important;
+  box-shadow: 0 0 0 1px #e2136e22, 0 4px 12px -2px #e2136e20;
+}
+
+.provider-btn.border-nagad,
+.cashout-channel-btn.border-nagad {
+  border-color: #f7941d !important;
+  background-color: #fff7ed !important;
+  box-shadow: 0 0 0 1px #f7941d22, 0 4px 12px -2px #f7941d20;
+}
+
+.provider-btn.border-rocket,
+.cashout-channel-btn.border-rocket {
+  border-color: #8c3494 !important;
+  background-color: #faf5ff !important;
+  box-shadow: 0 0 0 1px #8c349422, 0 4px 12px -2px #8c349420;
+}
+
+.cashout-channel-btn.border-bank {
+  border-color: #059669 !important;
+  background-color: #f0fdf4 !important;
+  box-shadow: 0 0 0 1px #05966922, 0 4px 12px -2px #05966920;
+}
+
+.txn-ico-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Vendor card action with emerald accent */
+.card-action[data-emerald] .card-icon-wrap {
+  background: #d1fae5;
+  color: #059669;
+}
+
+/* Timestamp in txn row */
+.txn-sub {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   OTP Digit Split-Input
+   ========================================================================== */
+
+.otp-digit-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 4px 0;
+}
+
+.otp-digit {
+  width: 52px;
+  height: 62px;
+  border-radius: 16px;
+  border: 2px solid #e2e8f0;
+  background: #f8fafc;
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.12s, background 0.15s;
+  caret-color: #F26522;
+  /* Remove number spinners */
+  -moz-appearance: textfield;
+}
+
+.otp-digit::-webkit-outer-spin-button,
+.otp-digit::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.otp-digit:focus {
+  border-color: #F26522;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.2);
+  background: #fff;
+  transform: translateY(-2px) scale(1.04);
+}
+
+.otp-digit.filled {
+  border-color: #F26522;
+  background: #fff7ed;
+}
+
+.otp-digit.error {
+  border-color: #ef4444;
+  animation: otp-shake 0.35s ease;
+}
+
+@keyframes otp-shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX( 6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX( 4px); }
+}
+
+/* OTP Countdown timer pill */
+.otp-timer-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.otp-timer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  transition: background 0.3s, color 0.3s;
+  background: #fffbeb;
+  color: #d97706;
+  border: 1.5px solid #fde68a;
+}
+
+.otp-timer-pill.urgent {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+  animation: pulse-red 1s infinite;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
+}
+
+/* Resend OTP button */
+.btn-resend {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #64748b;
+  cursor: not-allowed;
+  transition: all 0.18s;
+}
+
+.btn-resend:not(:disabled) {
+  color: #F26522;
+  border-color: #fed7aa;
+  background: #fff7ed;
+  cursor: pointer;
+}
+
+.btn-resend:not(:disabled):hover {
+  background: #ffedd5;
+  transform: translateY(-1px);
+}
+
+body.dark-theme .otp-digit:not(#view-auth *) {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .otp-digit:focus:not(#view-auth *) {
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.3) !important;
+}
+
+body.dark-theme .otp-digit.filled:not(#view-auth *) {
+  border-color: #f26522 !important;
+  background: #1e293b !important;
+}
+
+body.dark-theme .otp-timer-pill:not(#view-auth *) {
+  background: rgba(217, 119, 6, 0.2) !important;
+  color: #fcd34d !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+body.dark-theme .otp-timer-pill.urgent:not(#view-auth *) {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+body.dark-theme .btn-resend:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .btn-resend:not(:disabled):not(#view-auth *) {
+  color: #fdba74 !important;
+  border-color: #f26522 !important;
+  background: rgba(242, 101, 34, 0.2) !important;
+}
+
+body.dark-theme .btn-resend:not(:disabled):hover:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.3) !important;
+}
+
+/* ==========================================================================
+   Loyalty Points Widget — inside the hero balance card
+   ========================================================================== */
+
+.loyalty-widget {
+  margin-top: 16px;
+  padding: 14px 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.loyalty-pts-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.loyalty-pts-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(255,255,255,0.7);
+}
+
+.loyalty-pts-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.loyalty-pts-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+  margin-top: 1px;
+}
+
+/* Redeem button — active state */
+.btn-redeem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.15s, background 0.15s, opacity 0.2s;
+  white-space: nowrap;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #7c2d12;
+  box-shadow: 0 4px 14px rgba(251,191,36,0.35);
+}
+
+.btn-redeem:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(251,191,36,0.45);
+}
+
+/* Disabled / locked state */
+.btn-redeem:disabled {
+  background: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.45);
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Loyalty entry in transaction history */
+.txn-ico.loyalty {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #b45309;
+}
+
+/* ==========================================================================
+   UniPay Modern FinTech Landing Page Design System
+   ========================================================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glassmorphism Navigation */
+.nav-glass {
+  background: rgba(11, 19, 43, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Radiant Text Gradients */
+.text-gradient-brand {
+  background: linear-gradient(135deg, #FF923C 0%, #F26522 50%, #EA580C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #BAE6FD 0%, #38BDF8 50%, #0284C7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Atmospheric Ambient Orbs */
+/* Fixed 500–550px orbs used to spill far past the viewport on phones, forcing
+   the whole page to scroll sideways. They now scale with the viewport and the
+   .ambient-layer wrapper clips them, so the glow stays decorative-only. */
+.ambient-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambient-glow-1 {
+  position: absolute;
+  width: min(550px, 120vw);
+  height: min(550px, 120vw);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(242, 101, 34, 0.20) 0%, rgba(242, 101, 34, 0) 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  will-change: transform;
+  animation: float-glow 12s ease-in-out infinite alternate;
+}
+
+.ambient-glow-2 {
+  position: absolute;
+  width: min(500px, 110vw);
+  height: min(500px, 110vw);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.16) 0%, rgba(56, 189, 248, 0) 70%);
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: transform;
+  animation: float-glow-reverse 15s ease-in-out infinite alternate;
+}
+
+/* Respect users who ask the OS to reduce motion. */
+@media (prefers-reduced-motion: reduce) {
+
+  .ambient-glow-1,
+  .ambient-glow-2 {
+    animation: none;
+  }
+}
+
+/* ==========================================================================
+   Developer Attribution Cards (landing footer — theme-immune by design)
+   ========================================================================== */
+.dev-card {
+  min-width: 0;
+}
+
+.dev-avatar {
+  display: block;
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  box-shadow: 0 4px 12px rgba(2, 6, 23, 0.6);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.dev-avatar--brand {
+  box-shadow: 0 0 0 2px rgba(242, 101, 34, 0.45), 0 4px 12px rgba(2, 6, 23, 0.6);
+}
+
+.dev-avatar--blue {
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45), 0 4px 12px rgba(2, 6, 23, 0.6);
+}
+
+.dev-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Bias upward: portraits are cropped to the head, never the chest. */
+  object-position: 50% 22%;
+  display: block;
+}
+
+.dev-card:hover .dev-avatar {
+  transform: scale(1.06);
+}
+
+.dev-card:hover .dev-avatar--brand {
+  box-shadow: 0 0 0 2px rgba(242, 101, 34, 0.9), 0 8px 20px rgba(242, 101, 34, 0.28);
+}
+
+.dev-card:hover .dev-avatar--blue {
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.9), 0 8px 20px rgba(56, 189, 248, 0.28);
+}
+
+/* Underline reveals that the name is a link, without shifting layout. */
+.dev-name {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1.5px;
+  transition: background-size 0.25s ease, color 0.2s ease;
+  overflow-wrap: anywhere;
+}
+
+.dev-name:hover,
+.dev-name:focus-visible {
+  background-size: 100% 1.5px;
+}
+
+.dev-fb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  color: #ffffff;
+  transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dev-fb svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.dev-fb--brand {
+  background: rgba(242, 101, 34, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(242, 101, 34, 0.45);
+}
+
+.dev-fb--blue {
+  background: rgba(56, 189, 248, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.45);
+}
+
+.dev-fb--brand:hover,
+.dev-fb--brand:focus-visible {
+  background: #1877F2;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.45);
+  transform: scale(1.12);
+}
+
+.dev-fb--blue:hover,
+.dev-fb--blue:focus-visible {
+  background: #1877F2;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.45);
+  transform: scale(1.12);
+}
+
+/* Visible keyboard focus for the new links. */
+.dev-name:focus-visible,
+.dev-fb:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (min-width: 640px) {
+  .dev-avatar {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+@keyframes float-glow {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(40px, -30px) scale(1.08); }
+}
+
+@keyframes float-glow-reverse {
+  0% { transform: translate(0, 0) scale(1.05); }
+  100% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
+/* Hero Live Interactive FinTech Card */
+.hero-card-container {
+  perspective: 1000px;
+}
+
+.hero-fintech-card {
+  background: linear-gradient(145deg, #1E293B 0%, #0F172A 70%, #0B132B 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 28px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 40px rgba(242, 101, 34, 0.18);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.hero-fintech-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.6), 0 0 50px rgba(242, 101, 34, 0.25);
+}
+
+.hero-fintech-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 50% 50%, rgba(242, 101, 34, 0.09) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* Live Simulation Pulse Dot */
+.live-pulse {
+  position: relative;
+  display: inline-flex;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background-color: #10B981;
+}
+
+.live-pulse::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background-color: #10B981;
+  opacity: 0.7;
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 0.9; }
+  80%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Bento Grid Feature Cards */
+.bento-card {
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: 24px;
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.08), 0 0 20px rgba(242, 101, 34, 0.08);
+  border-color: #FED7AA;
+}
+
+.bento-card-dark {
+  background: linear-gradient(145deg, #141E33 0%, #0B132B 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.bento-card-dark:hover {
+  border-color: rgba(242, 101, 34, 0.5);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 30px rgba(242, 101, 34, 0.2);
+}
+
+.bento-icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 18px;
+  transition: transform 0.2s ease;
+}
+
+.bento-card:hover .bento-icon-box {
+  transform: scale(1.08) rotate(3deg);
+}
+
+/* SplitPay Interactive Flow Step Cards */
+.splitpay-step-card {
+  background: #ffffff;
+  border: 1.5px solid #F1F5F9;
+  border-radius: 20px;
+  padding: 22px;
+  position: relative;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.splitpay-step-card:hover {
+  transform: translateY(-2px);
+  border-color: #FED7AA;
+  box-shadow: 0 12px 28px rgba(242, 101, 34, 0.1);
+}
+
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 14px;
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FFEDD5;
+}
+
+/* Merchant Hotspot Chips */
+.merchant-badge-card {
+  background: #ffffff;
+  border: 1px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.merchant-badge-card:hover {
+  transform: translateY(-2px);
+  border-color: #FED7AA;
+  box-shadow: 0 8px 20px rgba(242, 101, 34, 0.08);
+}
+
+/* FAQ Accordion Styling */
+details.faq-item {
+  background: #ffffff;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 20px;
+  padding: 18px 22px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+details.faq-item[open] {
+  border-color: #F26522;
+  background: #FFFDFB;
+}
+
+details.faq-item summary {
+  cursor: pointer;
+  list-style: none;
+  font-weight: 700;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+details.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+details.faq-item summary .faq-chevron {
+  transition: transform 0.2s ease;
+  color: #64748B;
+}
+
+details.faq-item[open] summary .faq-chevron {
+  transform: rotate(180deg);
+  color: #F26522;
+}
+
+/* Demo Profile Quick Card */
+.demo-profile-card {
+  background: #ffffff;
+  border: 1.5px solid #E2E8F0;
+  border-radius: 18px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.demo-profile-card:hover {
+  border-color: #F26522;
+  background: #FFF7ED;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(242, 101, 34, 0.12);
+}
+
+.demo-profile-card.active {
+  border-color: #F26522;
+  background: #FFF7ED;
+  box-shadow: 0 0 0 2px #F26522;
+}
+
+/* ==========================================================================
+   3D Online Visa / Mastercard Campus Debit Card
+   ========================================================================== */
+.card-3d-scene {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.card-3d-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.586 / 1;
+  min-height: 275px;
+  border-radius: 26px;
+  cursor: pointer;
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
+}
+
+.card-3d-stage:hover {
+  filter: drop-shadow(0 20px 32px rgba(242, 101, 34, 0.32));
+}
+
+/* Vendor card stage — emerald glow on hover */
+#vendor-card-3d-stage:hover {
+  filter: drop-shadow(0 20px 32px rgba(16, 185, 129, 0.38));
+}
+
+.card-3d-flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.34, 1.35, 0.64, 1);
+  border-radius: 26px;
+}
+
+.card-3d-flipper.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 26px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 24px;
+  box-shadow:
+    0 25px 50px -12px rgba(11, 19, 43, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+    0 2px 4px rgba(255, 255, 255, 0.25) inset;
+  box-sizing: border-box;
+}
+
+/* Front Face Styling */
+.card-face.card-front {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(242, 101, 34, 0.38) 0%, transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(217, 119, 6, 0.2) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.4) 0%, transparent 100%),
+    linear-gradient(135deg, #090e1a 0%, #111a2e 35%, #18233c 65%, #1f140d 90%, #261105 100%);
+  color: #ffffff;
+}
+
+/* Card Glare reflection layer */
+.card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 26px;
+  background: radial-gradient(
+    circle at var(--glare-x, 50%) var(--glare-y, 30%),
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.05) 30%,
+    transparent 65%
+  );
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 5;
+}
+
+/* Hologram foil shimmer lines */
+.card-face::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 30%,
+    rgba(242, 101, 34, 0.08) 45%,
+    rgba(255, 255, 255, 0.06) 55%,
+    transparent 70%
+  );
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* EMV Chip */
+.emv-chip {
+  width: 46px;
+  height: 35px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ffe066 0%, #e6b800 35%, #b38600 70%, #ffd11a 100%);
+  position: relative;
+  border: 1px solid #997300;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.6);
+  overflow: hidden;
+}
+
+.emv-chip::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(102, 77, 0, 0.7);
+}
+
+.emv-chip::after {
+  content: '';
+  position: absolute;
+  left: 33%;
+  top: 0;
+  bottom: 0;
+  width: 34%;
+  border-left: 1px solid rgba(102, 77, 0, 0.7);
+  border-right: 1px solid rgba(102, 77, 0, 0.7);
+  border-radius: 4px;
+}
+
+/* Contactless Wave Icon */
+.contactless-waves {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+/* Embossed Typography */
+.embossed-text {
+  font-family: 'Inter', 'Courier New', monospace;
+  letter-spacing: 0.14em;
+  color: #f1f5f9;
+  text-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.28),
+    0 -1px 1px rgba(0, 0, 0, 0.75);
+}
+
+.card-pan-text {
+  font-family: 'Courier New', 'Inter', monospace;
+  letter-spacing: 0.18em;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow:
+    0 1px 2px rgba(255, 255, 255, 0.35),
+    0 -1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* Card Hologram Seal - Official UIU Hologram */
+.card-hologram-seal {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #fff7ed 35%, #fed7aa 65%, #fdba74 100%);
+  padding: 2.5px;
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 0 14px rgba(242, 101, 34, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 0 6px rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.card-hologram-seal:hover {
+  transform: scale(1.12) rotate(4deg);
+  box-shadow: 
+    0 0 20px rgba(242, 101, 34, 0.7),
+    0 4px 10px rgba(0, 0, 0, 0.45),
+    inset 0 0 8px rgba(255, 255, 255, 1);
+}
+
+.card-hologram-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+.card-hologram-shimmer {
+  position: absolute;
+  inset: -120%;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.7) 46%,
+    rgba(242, 101, 34, 0.45) 50%,
+    rgba(56, 189, 248, 0.5) 54%,
+    transparent 70%
+  );
+  transform: rotate(25deg);
+  animation: holo-shimmer-sweep 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+@keyframes holo-shimmer-sweep {
+  0% { transform: translateY(-80%) rotate(25deg); }
+  50% { transform: translateY(80%) rotate(25deg); }
+  100% { transform: translateY(-80%) rotate(25deg); }
+}
+
+/* UniPay Card Sign */
+.unipay-card-sign {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.unipay-card-sign:hover {
+  transform: scale(1.04);
+  box-shadow: 0 0 15px rgba(242, 101, 34, 0.35);
+}
+
+/* Back Face Styling */
+.card-face.card-back {
+  background:
+    radial-gradient(circle at 15% 85%, rgba(242, 101, 34, 0.25) 0%, transparent 50%),
+    linear-gradient(135deg, #070b14 0%, #0d1527 50%, #151c2e 100%);
+  color: #ffffff;
+  transform: rotateY(180deg);
+  padding: 0;
+}
+
+.card-magstripe {
+  width: 100%;
+  height: 48px;
+  background: linear-gradient(to bottom, #020617 0%, #0f172a 50%, #020617 100%);
+  margin-top: 24px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.card-signature-band {
+  background: repeating-linear-gradient(
+    45deg,
+    #f8fafc,
+    #f8fafc 8px,
+    #e2e8f0 8px,
+    #e2e8f0 16px
+  );
+  height: 38px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile Photo Uploader */
+.prof-avatar-ring {
+  position: relative;
+  display: inline-block;
+  border-radius: 28px;
+  padding: 3px;
+  background: linear-gradient(135deg, #FF782E 0%, #F26522 50%, #D97706 100%);
+  box-shadow: 0 8px 24px rgba(242, 101, 34, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.prof-avatar-ring:hover {
+  transform: scale(1.03);
+  box-shadow: 0 12px 28px rgba(242, 101, 34, 0.35);
+}
+
+.preset-avatar-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 1.35rem;
+  border-radius: 14px;
+  background: #f1f5f9;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.preset-avatar-chip:hover {
+  background: #FFF7ED;
+  border-color: #F26522;
+  transform: translateY(-2px);
+}
+
+.preset-avatar-chip.active {
+  background: #FFF7ED;
+  border-color: #F26522;
+  box-shadow: 0 0 0 2px #F26522;
+}
+
+/* ==========================================================================
+   Dark Theme (Matching Landing Page Slate-950 Aesthetics: #020617)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   LANDING PAGE IS THEME-IMMUNE
+   #view-auth is permanently dark (bg-slate-950 text-slate-100). The theme
+   toggle only affects the logged-in dashboard (#view-app). The rules below
+   pin the landing page's own palette so it renders identically in both modes
+   and cannot be washed out by any theme override.
+   -------------------------------------------------------------------------- */
+#view-auth {
+  background-color: #020617 !important;
+  background-image:
+    radial-gradient(ellipse at 10% 12%, rgba(242, 101, 34, 0.14) 0px, transparent 50%),
+    radial-gradient(ellipse at 90% 18%, rgba(56, 189, 248, 0.10) 0px, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(242, 101, 34, 0.08) 0px, transparent 60%) !important;
+  background-attachment: fixed !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark-theme,
+body.dark-theme {
+  background-color: #020617 !important;
+  background-image: 
+    radial-gradient(at 10% 12%, rgba(242, 101, 34, 0.12) 0px, transparent 50%),
+    radial-gradient(at 90% 18%, rgba(56, 189, 248, 0.09) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, rgba(242, 101, 34, 0.07) 0px, transparent 60%) !important;
+  background-attachment: fixed !important;
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme #view-app:not(#view-auth *) {
+  background-color: transparent !important;
+  color: #f1f5f9 !important;
+}
+
+/* Dark mode for glass header - make it adapt to theme */
+body.dark-theme .glass-header:not(#view-auth *) {
+  background: rgba(2, 6, 23, 0.9) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* App topbar stays navy in light mode — its children use text-white / bg-navy-800.
+   Only the shadow/border are tuned for the lighter page behind it. */
+body:not(.dark-theme) .glass-header:not(#view-auth *) {
+  background: rgba(11, 19, 43, 0.88) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.18) !important;
+}
+
+/* ==========================================================================
+   Light Mode Text Color Fixes - Ensure proper contrast in light mode
+   ========================================================================== */
+body:not(.dark-theme) #view-app:not(#view-auth *) {
+  background-color: transparent !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .glass-panel:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 
+    0 16px 36px -8px rgba(15, 23, 42, 0.08),
+    0 2px 6px rgba(15, 23, 42, 0.03),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .glass-panel h1,
+body:not(.dark-theme) .glass-panel h2,
+body:not(.dark-theme) .glass-panel h3,
+body:not(.dark-theme) .glass-panel h4,
+body:not(.dark-theme) .glass-panel .font-extrabold,
+body:not(.dark-theme) .glass-panel .font-bold {
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .glass-panel .text-slate-400,
+body:not(.dark-theme) .glass-panel .text-slate-500,
+body:not(.dark-theme) .glass-panel .text-slate-600 {
+  color: #475569 !important;
+}
+
+body:not(.dark-theme) .inp:not(#view-auth *) {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .inp:focus:not(#view-auth *) {
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.18) !important;
+}
+
+body:not(.dark-theme) .lbl:not(#view-auth *) {
+  color: #475569 !important;
+}
+
+body:not(.dark-theme) .btn-ghost:not(#view-auth *) {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body:not(.dark-theme) .btn-ghost:hover:not(#view-auth *) {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .toast:not(#view-auth *) {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .toast .t-title {
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .toast .t-msg {
+  color: #475569 !important;
+}
+
+body:not(.dark-theme) .notif-item:not(#view-auth *) {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+body:not(.dark-theme) .notif-item:hover:not(#view-auth *) {
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+}
+
+body:not(.dark-theme) .notif-item .text-slate-800 {
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .notif-item .text-slate-500 {
+  color: #64748b !important;
+}
+
+body:not(.dark-theme) .notif-item .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+body:not(.dark-theme) .txn-row:not(#view-auth *) {
+  border-color: rgba(148, 163, 184, 0.12) !important;
+}
+
+body:not(.dark-theme) .txn-name:not(#view-auth *) {
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .txn-sub:not(#view-auth *) {
+  color: #64748b !important;
+}
+
+body:not(.dark-theme) .txn-amt.in:not(#view-auth *) {
+  color: #059669 !important;
+}
+
+body:not(.dark-theme) .txn-amt.out:not(#view-auth *) {
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .txn-ico.in:not(#view-auth *) {
+  background: #ECFDF5 !important;
+  color: #059669 !important;
+}
+
+body:not(.dark-theme) .txn-ico.out:not(#view-auth *) {
+  background: #FFF7ED !important;
+  color: #EA580C !important;
+}
+
+body:not(.dark-theme) .split-progress-bg:not(#view-auth *) {
+  background: #f1f5f9 !important;
+}
+
+/* ==========================================================================
+   Light Mode Fixes for Expense Tracker & SplitPay
+   ========================================================================== */
+
+body:not(.dark-theme) #expense-tracker-user:not(#view-auth *),
+body:not(.dark-theme) #expense-tracker-vendor:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+body:not(.dark-theme) .expense-bar-tooltip:not(#view-auth *) {
+  background: #0f172a !important;
+}
+
+body:not(.dark-theme) .expense-bar-tooltip::after:not(#view-auth *) {
+  border-top-color: #0f172a !important;
+}
+
+body:not(.dark-theme) #expense-period-toggle:not(#view-auth *),
+body:not(.dark-theme) #vendor-expense-period-toggle:not(#view-auth *) {
+  background: #f1f5f9 !important;
+}
+
+body:not(.dark-theme) .expense-period-btn:not(.active-period):not(#view-auth *),
+body:not(.dark-theme) .vendor-expense-period-btn:not(.active-period-vendor):not(#view-auth *) {
+  color: #64748b !important;
+}
+
+body:not(.dark-theme) #expense-total:not(#view-auth *),
+body:not(.dark-theme) #expense-avg:not(#view-auth *),
+body:not(.dark-theme) #expense-peak:not(#view-auth *),
+body:not(.dark-theme) #vendor-expense-total:not(#view-auth *),
+body:not(.dark-theme) #vendor-expense-avg:not(#view-auth *),
+body:not(.dark-theme) #vendor-expense-peak:not(#view-auth *) {
+  color: #0f172a !important;
+}
+
+body:not(.dark-theme) .expense-chart-bars::before:not(#view-auth *) {
+  background-image: repeating-linear-gradient(
+    to top,
+    rgba(148,163,184,0.15) 0,
+    rgba(148,163,184,0.15) 1px,
+    transparent 1px,
+    transparent 25%
+  );
+}
+
+/* Light mode for SplitPay cards */
+body:not(.dark-theme) #split-incoming-list > div,
+body:not(.dark-theme) #split-outgoing-list > div {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08) !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) #split-incoming-list .bg-slate-50,
+body:not(.dark-theme) #split-outgoing-list .bg-slate-50,
+body:not(.dark-theme) #split-outgoing-list .bg-slate-100 {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Light mode: keep semantic tints distinct (do NOT collapse everything to orange) */
+body:not(.dark-theme) .bg-orange-50:not(#view-auth *),
+body:not(.dark-theme) .bg-brand-50:not(#view-auth *),
+body:not(.dark-theme) .bg-brand-50\/60:not(#view-auth *),
+body:not(.dark-theme) .bg-brand-50\/20:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #fed7aa !important;
+}
+
+body:not(.dark-theme) .text-orange-700:not(#view-auth *),
+body:not(.dark-theme) .text-amber-700:not(#view-auth *),
+body:not(.dark-theme) .text-brand-700:not(#view-auth *) {
+  color: #c2410c !important;
+}
+
+body:not(.dark-theme) .text-emerald-700:not(#view-auth *) {
+  color: #047857 !important;
+}
+
+body:not(.dark-theme) .text-blue-700:not(#view-auth *) {
+  color: #1d4ed8 !important;
+}
+
+body:not(.dark-theme) .text-orange-800:not(#view-auth *),
+body:not(.dark-theme) .text-amber-800:not(#view-auth *) {
+  color: #9a3412 !important;
+}
+body:not(.dark-theme) .text-emerald-800:not(#view-auth *),
+body:not(.dark-theme) .text-emerald-900:not(#view-auth *) {
+  color: #065f46 !important;
+}
+body:not(.dark-theme) .text-blue-800:not(#view-auth *) {
+  color: #1e40af !important;
+}
+body:not(.dark-theme) .text-brand-900:not(#view-auth *) {
+  color: #1e293b !important;
+}
+
+/* Light mode for channel & provider buttons */
+body:not(.dark-theme) .provider-btn:not(#view-auth *),
+body:not(.dark-theme) .cashout-channel-btn:not(#view-auth *) {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .provider-btn.bg-brand-50:not(#view-auth *),
+body:not(.dark-theme) .provider-btn.border-brand-500:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #f26522 !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .cashout-channel-btn.bg-emerald-50:not(#view-auth *),
+body:not(.dark-theme) .cashout-channel-btn.border-emerald-500:not(#view-auth *) {
+  background: #ecfdf5 !important;
+  border-color: #10b981 !important;
+  color: #1e293b !important;
+}
+
+body:not(.dark-theme) .quick-amt-chip:not(#view-auth *),
+body:not(.dark-theme) .quick-friend-btn:not(#view-auth *),
+body:not(.dark-theme) .split-preset-chip:not(#view-auth *),
+body:not(.dark-theme) .preset-avatar-chip:not(#view-auth *) {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body:not(.dark-theme) .quick-amt-chip:hover:not(#view-auth *),
+body:not(.dark-theme) .quick-friend-btn:hover:not(#view-auth *),
+body:not(.dark-theme) .split-preset-chip:hover:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #f26522 !important;
+  color: #f26522 !important;
+}
+
+body:not(.dark-theme) .preset-avatar-chip.active:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 2px #f26522 !important;
+}
+
+body:not(.dark-theme) .cashin-preset-btn:not(#view-auth *) {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+body:not(.dark-theme) .cashin-preset-btn:hover:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #f26522 !important;
+  color: #f26522 !important;
+}
+
+body:not(.dark-theme) #btn-quick-fill-otp:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #fed7aa !important;
+  color: #b45309 !important;
+}
+
+body:not(.dark-theme) #btn-quick-fill-otp:hover:not(#view-auth *) {
+  background: #ffedd5 !important;
+  color: #f26522 !important;
+}
+
+/* Vendor stats live inside .glass-dark-panel (dark in BOTH modes) — keep light text */
+body:not(.dark-theme) #vendor-stall:not(#view-auth *),
+body:not(.dark-theme) #vendor-count:not(#view-auth *) {
+  color: #ffffff !important;
+}
+body:not(.dark-theme) #vendor-today:not(#view-auth *) {
+  color: #34d399 !important;
+}
+
+body:not(.dark-theme) #cashout-bank-fields:not(#view-auth *) {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* Light mode for QR mode switcher */
+body:not(.dark-theme) .qr-mode:not(#view-auth *) {
+  color: #64748b !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+body:not(.dark-theme) .qr-mode.active:not(#view-auth *) {
+  background: #ffffff !important;
+  color: #f26522 !important;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08) !important;
+  border-color: #f26522 !important;
+}
+
+body:not(.dark-theme) .qr-mode:hover:not(.active):not(#view-auth *) {
+  background: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+/* Light mode QR code image styling */
+body:not(.dark-theme) #qr-image:not(#view-auth *) {
+  border-color: #e2e8f0 !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12) !important;
+}
+
+body:not(.dark-theme) #qr-reader:not(#view-auth *) {
+  border-color: #e2e8f0 !important;
+  background: #ffffff !important;
+  box-shadow: inset 0 2px 8px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Light mode for vendor profile modal fields */
+body:not(.dark-theme) #prof-vendor-section:not(#view-auth *) {
+  background: #fff7ed !important;
+  border-color: #fed7aa !important;
+}
+
+body:not(.dark-theme) #cashout-bank-fields:not(#view-auth *) {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+/* NOTE: .auth-card-panel, .auth-tab-container, .auth-tab, .demo-profile-card and
+   .demo-chip are used ONLY inside #view-auth (the always-dark landing page).
+   No theme overrides — the sign-in card is a deliberate light panel on the dark
+   landing page and stays identical in both modes. */
+
+/* NOTE: .merchant-badge-card, .faq-item, .bento-card, .splitpay-step-card and
+   .step-badge are used ONLY inside #view-auth (the always-dark landing page),
+   so they intentionally have NO theme overrides. They look identical in both modes. */
+
+/* Light mode for notification center modal */
+body:not(.dark-theme) #modal-notifications .notif-item {
+  background: rgba(248, 250, 252, 0.95) !important;
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+body:not(.dark-theme) #modal-notifications .notif-item:hover {
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+}
+
+body:not(.dark-theme) #modal-notifications .notif-item.unread {
+  background: rgba(255, 247, 237, 0.9) !important;
+  border-color: rgba(253, 186, 116, 0.7) !important;
+}
+
+/* Light mode for vendor cashout items */
+body:not(.dark-theme) .txn-ico.out[style*="#d1fae5"]:not(#view-auth *) {
+  background: #d1fae5 !important;
+  color: #059669 !important;
+}
+
+/* The 3D card face is dark in BOTH modes — keep light text on it */
+body:not(.dark-theme) .card-face .text-slate-400,
+body:not(.dark-theme) .card-face .text-slate-300,
+body:not(.dark-theme) .card-face .text-slate-200 {
+  color: rgba(226, 232, 240, 0.92) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+body:not(.dark-theme) #user-balance:not(#view-auth *),
+body:not(.dark-theme) #vendor-balance:not(#view-auth *) {
+  color: #ffffff !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.75) !important;
+}
+
+/* Light mode for SplitPay badge */
+body:not(.dark-theme) .badge-pending:not(#view-auth *) {
+  background: #FFFBEB !important;
+  color: #D97706 !important;
+  border-color: #FDE68A !important;
+}
+
+body:not(.dark-theme) .badge-accepted:not(#view-auth *),
+body:not(.dark-theme) .badge-settled:not(#view-auth *) {
+  background: #ECFDF5 !important;
+  color: #059669 !important;
+  border-color: #A7F3D0 !important;
+}
+
+body:not(.dark-theme) .badge-declined:not(#view-auth *) {
+  background: #FEF2F2 !important;
+  color: #DC2626 !important;
+  border-color: #FECACA !important;
+}
+
+body:not(.dark-theme) .badge-active:not(#view-auth *) {
+  background: #FFF7ED !important;
+  color: #EA580C !important;
+  border-color: #FFEDD5 !important;
+}
+
+/* Light mode for error banners */
+body:not(.dark-theme) .bg-red-50:not(#view-auth *) {
+  background: #FEF2F2 !important;
+  border-color: #FECACA !important;
+}
+
+body:not(.dark-theme) .text-red-800:not(#view-auth *),
+body:not(.dark-theme) .text-red-700:not(#view-auth *),
+body:not(.dark-theme) .text-red-600:not(#view-auth *) {
+  color: #DC2626 !important;
+}
+
+body:not(.dark-theme) .border-red-100:not(#view-auth *),
+body:not(.dark-theme) .border-red-200:not(#view-auth *) {
+  border-color: #FECACA !important;
+}
+
+body.dark-theme .glass-panel:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 
+    0 16px 36px -8px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.08) !important;
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .card-action:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.78) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.dark-theme .card-action:hover:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.90) !important;
+  border-color: rgba(242, 101, 34, 0.5) !important;
+  box-shadow: 0 18px 36px -8px rgba(242, 101, 34, 0.25) !important;
+}
+
+body.dark-theme .card-action span {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .card-action small {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .card-action .card-icon-wrap {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid rgba(242, 101, 34, 0.35) !important;
+}
+
+body.dark-theme .modal:not(#view-auth *) {
+  background: rgba(11, 19, 43, 0.96) !important;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65) !important;
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .inp:not(#view-auth *) {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .inp:focus:not(#view-auth *) {
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.25) !important;
+}
+
+body.dark-theme .lbl:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .btn-ghost:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-theme .btn-ghost:hover:not(#view-auth *) {
+  background: rgba(51, 65, 85, 0.9) !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .text-slate-900:not(#view-auth *),
+body.dark-theme .text-slate-800:not(#view-auth *) {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .text-slate-700:not(#view-auth *),
+body.dark-theme .text-slate-600:not(#view-auth *) {
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme .text-slate-500:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .bg-slate-50:not(#view-auth *),
+body.dark-theme .bg-slate-100:not(#view-auth *) {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+}
+
+body.dark-theme .border-slate-100:not(#view-auth *),
+body.dark-theme .border-slate-200:not(#view-auth *) {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-theme .divide-slate-100 > * + * {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-theme .toast:not(#view-auth *) {
+  background: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .toast .t-title {
+  color: #ffffff !important;
+}
+
+body.dark-theme .toast .t-msg {
+  color: #cbd5e1 !important;
+}
+
+/* ==========================================================================
+   Dark Theme Text Contrast & Invisibility Overrides
+   ========================================================================== */
+/* Recent Transactions in Dark Mode */
+body.dark-theme .txn-row:not(#view-auth *) {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+body.dark-theme .txn-row:hover:not(#view-auth *) {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+body.dark-theme .txn-name:not(#view-auth *) {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .txn-sub:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .txn-amt.out:not(#view-auth *) {
+  color: #f1f5f9 !important;
+}
+
+body.dark-theme .txn-amt.in:not(#view-auth *) {
+  color: #34d399 !important;
+}
+
+body.dark-theme .txn-ico.in:not(#view-auth *) {
+  background: rgba(16, 185, 129, 0.16) !important;
+  color: #34d399 !important;
+  border: 1px solid rgba(16, 185, 129, 0.3) !important;
+}
+
+body.dark-theme .txn-ico.out:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.16) !important;
+  color: #fb923c !important;
+  border: 1px solid rgba(242, 101, 34, 0.3) !important;
+}
+
+/* 3D Smart Cards Text Visibility (Both User & Vendor Cards) */
+#card-holder-name,
+#vendor-card-holder-name,
+.card-holder-name {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 255, 255, 0.4) !important;
+  letter-spacing: 0.08em !important;
+}
+
+.card-pan-text,
+#vendor-card-number-display {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 12px rgba(255, 255, 255, 0.4) !important;
+}
+
+#card-cvv-display,
+#vendor-card-cvv-display {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+.card-face .text-slate-400,
+.card-face .text-slate-300 {
+  color: rgba(226, 232, 240, 0.92) !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+#user-balance,
+#vendor-balance {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* SplitPay Cards in Dark Mode */
+body.dark-theme #split-incoming-list > div,
+body.dark-theme #split-outgoing-list > div {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme #split-incoming-list .bg-slate-50,
+body.dark-theme #split-outgoing-list .bg-slate-50,
+body.dark-theme #split-outgoing-list .bg-slate-100 {
+  background: rgba(30, 41, 59, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-theme .split-progress-bg:not(#view-auth *) {
+  background: rgba(51, 65, 85, 0.6) !important;
+}
+
+/* Modals & Info Banners in Dark Mode */
+body.dark-theme .bg-orange-50:not(#view-auth *),
+body.dark-theme .bg-amber-50:not(#view-auth *),
+body.dark-theme .bg-emerald-50:not(#view-auth *),
+body.dark-theme .bg-blue-50:not(#view-auth *),
+body.dark-theme .bg-purple-50:not(#view-auth *),
+body.dark-theme .bg-brand-50:not(#view-auth *),
+body.dark-theme .bg-brand-50\/60:not(#view-auth *),
+body.dark-theme .bg-brand-50\/20:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.75) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-theme .text-orange-700:not(#view-auth *),
+body.dark-theme .text-amber-700:not(#view-auth *),
+body.dark-theme .text-brand-700:not(#view-auth *) {
+  color: #fdba74 !important;
+}
+
+body.dark-theme .text-emerald-700:not(#view-auth *) {
+  color: #6ee7b7 !important;
+}
+
+body.dark-theme .text-blue-700:not(#view-auth *) {
+  color: #93c5fd !important;
+}
+
+body.dark-theme .text-orange-800:not(#view-auth *),
+body.dark-theme .text-amber-800:not(#view-auth *),
+body.dark-theme .text-emerald-800:not(#view-auth *),
+body.dark-theme .text-blue-800:not(#view-auth *),
+body.dark-theme .text-brand-900:not(#view-auth *),
+body.dark-theme .text-emerald-900:not(#view-auth *) {
+  color: #ffffff !important;
+}
+
+/* Channel & Provider Buttons in Dark Mode */
+body.dark-theme .provider-btn:not(#view-auth *),
+body.dark-theme .cashout-channel-btn:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .provider-btn.bg-brand-50:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.2) !important;
+  border-color: #f26522 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .cashout-channel-btn.bg-emerald-50:not(#view-auth *) {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10b981 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .quick-amt-chip:not(#view-auth *),
+body.dark-theme .quick-friend-btn:not(#view-auth *),
+body.dark-theme .split-preset-chip:not(#view-auth *),
+body.dark-theme .preset-avatar-chip:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-theme .quick-amt-chip:hover:not(#view-auth *),
+body.dark-theme .quick-friend-btn:hover:not(#view-auth *),
+body.dark-theme .split-preset-chip:hover:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.25) !important;
+  border-color: #f26522 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .preset-avatar-chip.active:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.25) !important;
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 2px #f26522 !important;
+}
+
+body.dark-theme .cashin-preset-btn:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-theme .cashin-preset-btn:hover:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.25) !important;
+  border-color: #f26522 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme #btn-quick-fill-otp:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.18) !important;
+  border-color: rgba(242, 101, 34, 0.4) !important;
+  color: #fdba74 !important;
+}
+
+body.dark-theme #btn-quick-fill-otp:hover:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.3) !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .otp-digit:not(#view-auth *) {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .otp-digit:focus:not(#view-auth *) {
+  border-color: #f26522 !important;
+  box-shadow: 0 0 0 3px rgba(242, 101, 34, 0.3) !important;
+}
+
+/* Vendor Stats & Profile in Dark Mode */
+body.dark-theme #vendor-stall:not(#view-auth *),
+body.dark-theme #vendor-today:not(#view-auth *),
+body.dark-theme #vendor-count:not(#view-auth *) {
+  color: #ffffff !important;
+}
+
+body.dark-theme #cashout-bank-fields:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ==========================================================================
+   Vendor 3D Smart Card System (Merchant Pass Palette)
+   ========================================================================== */
+.card-face.vendor-card-front {
+  background:
+    radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.38) 0%, transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(245, 158, 11, 0.22) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(6, 44, 32, 0.45) 0%, transparent 100%),
+    linear-gradient(135deg, #021a12 0%, #062c20 35%, #09202e 65%, #081720 90%, #030d07 100%);
+  color: #ffffff;
+}
+
+.card-face.vendor-card-back {
+  background:
+    radial-gradient(circle at 15% 85%, rgba(16, 185, 129, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.12) 0%, transparent 40%),
+    linear-gradient(135deg, #021a12 0%, #062c20 50%, #091f16 100%);
+  color: #ffffff;
+  /* Required: pre-rotated 180deg so it starts hidden (shown when flipper rotates) */
+  transform: rotateY(180deg);
+  padding: 0;
+}
+
+.vendor-hologram-seal {
+  background: radial-gradient(circle, #ffffff 0%, #ecfdf5 35%, #a7f3d0 65%, #34d399 100%);
+  border-color: rgba(52, 211, 153, 0.8) !important;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.5), 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+}
+
+.vendor-role-badge {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border: 1px solid rgba(52, 211, 153, 0.4) !important;
+  color: #6ee7b7 !important;
+}
+
+/* ==========================================================================
+   Notification Item & Center Styling
+   ========================================================================== */
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(248, 250, 252, 0.95);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  transition: all 0.18s ease;
+  position: relative;
+}
+
+.notif-item:hover {
+  background: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.notif-item.unread {
+  background: rgba(255, 247, 237, 0.9);
+  border-color: rgba(253, 186, 116, 0.7);
+}
+
+.notif-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f26522;
+  box-shadow: 0 0 6px rgba(242, 101, 34, 0.8);
+}
+
+body.dark-theme .notif-item:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dark-theme .notif-item:hover:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.9) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+}
+
+body.dark-theme .notif-item.unread:not(#view-auth *) {
+  background: rgba(43, 27, 18, 0.5) !important;
+  border-color: rgba(242, 101, 34, 0.4) !important;
+}
+
+body.dark-theme .notif-item .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .notif-item .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme .notif-item .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+.notif-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Visa-style Brand Badge & Typography
+   ========================================================================== */
+.unipay-visa-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  user-select: none;
+}
+
+/* ==========================================================================
+   Comprehensive Dark Theme Contrast & Visibility Fixes
+   ========================================================================== */
+body.dark-theme .notif-item .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .notif-item .text-slate-500 {
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme .notif-item .text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+/* Status Badges in Dark Mode */
+body.dark-theme .badge-pending:not(#view-auth *) {
+  background: rgba(217, 119, 6, 0.2) !important;
+  color: #fcd34d !important;
+  border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+body.dark-theme .badge-accepted:not(#view-auth *),
+body.dark-theme .badge-settled:not(#view-auth *) {
+  background: rgba(16, 185, 129, 0.2) !important;
+  color: #6ee7b7 !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+body.dark-theme .badge-declined:not(#view-auth *) {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+body.dark-theme .badge-active:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.2) !important;
+  color: #fdba74 !important;
+  border-color: rgba(242, 101, 34, 0.4) !important;
+}
+
+/* Error banners & alerts in dark mode */
+body.dark-theme .bg-red-50:not(#view-auth *) {
+  background: rgba(239, 68, 68, 0.15) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+body.dark-theme .text-red-800:not(#view-auth *),
+body.dark-theme .text-red-700:not(#view-auth *),
+body.dark-theme .text-red-600:not(#view-auth *) {
+  color: #fca5a5 !important;
+}
+
+body.dark-theme .border-red-100:not(#view-auth *),
+body.dark-theme .border-red-200:not(#view-auth *) {
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+/* QR Mode Switcher in Dark Mode */
+body.dark-theme .qr-mode:not(#view-auth *) {
+  color: #94a3b8;
+}
+
+body.dark-theme .qr-mode.active:not(#view-auth *) {
+  background: #1e293b !important;
+  color: #f26522 !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Cashin preset chips and quick-fill button */
+.cashin-preset-btn {
+  background: rgba(241, 245, 249, 0.8);
+  color: #334155;
+  transition: all 0.15s ease;
+}
+
+.cashin-preset-btn:hover {
+  background: #fff7ed;
+  border-color: #f26522;
+  color: #f26522;
+}
+
+body.dark-theme .cashin-preset-btn:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #e2e8f0 !important;
+}
+
+body.dark-theme .cashin-preset-btn:hover:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.25) !important;
+  border-color: #f26522 !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme #btn-quick-fill-otp:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.18) !important;
+  border-color: rgba(242, 101, 34, 0.4) !important;
+  color: #fdba74 !important;
+}
+
+body.dark-theme #btn-quick-fill-otp:hover:not(#view-auth *) {
+  background: rgba(242, 101, 34, 0.3) !important;
+  color: #ffffff !important;
+}
+
+/* General high-contrast text rules */
+body.dark-theme .text-slate-400:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme h1:not(#view-auth *),
+body.dark-theme h2:not(#view-auth *),
+body.dark-theme h3:not(#view-auth *),
+body.dark-theme h4:not(#view-auth *) {
+  color: #f8fafc !important;
+}
+
+
+/* ==========================================================================
+   Expense Tracker — Custom SVG/HTML Bar Chart
+   ========================================================================== */
+
+/* Period toggle active state — user (orange) */
+.expense-period-btn.active-period {
+  background: linear-gradient(135deg, #f26522, #ea580c);
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(242,101,34,0.35);
+}
+.expense-period-btn:not(.active-period) {
+  color: #64748b;
+}
+
+/* Period toggle active state — vendor (emerald) */
+.vendor-expense-period-btn.active-period-vendor {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(16,185,129,0.35);
+}
+.vendor-expense-period-btn:not(.active-period-vendor) {
+  color: #64748b;
+}
+
+/* Chart container */
+.expense-chart-wrap {
+  width: 100%;
+  min-height: 160px;
+  position: relative;
+  overflow: visible;
+}
+
+/* Bar chart outer frame */
+.expense-chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 160px;
+  padding-bottom: 28px;    /* room for date labels */
+  position: relative;
+}
+
+/* Grid lines behind bars */
+.expense-chart-bars::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 28px 0;
+  background-image: repeating-linear-gradient(
+    to top,
+    rgba(148,163,184,0.15) 0,
+    rgba(148,163,184,0.15) 1px,
+    transparent 1px,
+    transparent 25%
+  );
+  pointer-events: none;
+  border-radius: 4px;
+}
+
+/* Individual bar column wrapper */
+.expense-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+}
+
+/* The actual bar */
+.expense-bar {
+  width: 100%;
+  border-radius: 6px 6px 3px 3px;
+  min-height: 4px;
+  position: relative;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  transform-origin: bottom center;
+  animation: barRise 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+.expense-bar:hover {
+  transform: scaleY(1.04) scaleX(1.06);
+  filter: brightness(1.12);
+}
+
+/* User bar gradient */
+.expense-bar-user {
+  background: linear-gradient(to top, #ea580c, #f97316, #fdba74);
+  box-shadow: 0 2px 8px rgba(242,101,34,0.3);
+}
+
+.expense-bar-user.bar-zero {
+  background: rgba(242,101,34,0.12);
+  box-shadow: none;
+}
+
+/* Vendor bar gradient */
+.expense-bar-vendor {
+  background: linear-gradient(to top, #059669, #10b981, #6ee7b7);
+  box-shadow: 0 2px 8px rgba(16,185,129,0.3);
+}
+
+.expense-bar-vendor.bar-zero {
+  background: rgba(16,185,129,0.12);
+  box-shadow: none;
+}
+
+/* Date label below bar — sits in the chart's 28px bottom padding */
+.expense-bar-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  line-height: 1.1;
+  color: #64748b;
+}
+
+body:not(.dark-theme) .expense-bar-label:not(#view-auth *) {
+  color: #475569 !important;
+}
+
+body.dark-theme .expense-bar-label:not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+/* Tooltip */
+.expense-bar-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.expense-bar-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: #0f172a;
+}
+
+.expense-bar-col:hover .expense-bar-tooltip {
+  opacity: 1;
+}
+
+/* Bar rise animation */
+@keyframes barRise {
+  from { transform: scaleY(0); opacity: 0; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+
+/* Stagger delays for each bar (up to 31 bars) */
+.expense-bar-col:nth-child(1)  .expense-bar { animation-delay: 0.00s; }
+.expense-bar-col:nth-child(2)  .expense-bar { animation-delay: 0.03s; }
+.expense-bar-col:nth-child(3)  .expense-bar { animation-delay: 0.06s; }
+.expense-bar-col:nth-child(4)  .expense-bar { animation-delay: 0.09s; }
+.expense-bar-col:nth-child(5)  .expense-bar { animation-delay: 0.12s; }
+.expense-bar-col:nth-child(6)  .expense-bar { animation-delay: 0.15s; }
+.expense-bar-col:nth-child(7)  .expense-bar { animation-delay: 0.18s; }
+.expense-bar-col:nth-child(8)  .expense-bar { animation-delay: 0.21s; }
+.expense-bar-col:nth-child(9)  .expense-bar { animation-delay: 0.24s; }
+.expense-bar-col:nth-child(10) .expense-bar { animation-delay: 0.27s; }
+.expense-bar-col:nth-child(11) .expense-bar { animation-delay: 0.30s; }
+.expense-bar-col:nth-child(12) .expense-bar { animation-delay: 0.33s; }
+.expense-bar-col:nth-child(13) .expense-bar { animation-delay: 0.36s; }
+.expense-bar-col:nth-child(14) .expense-bar { animation-delay: 0.39s; }
+.expense-bar-col:nth-child(15) .expense-bar { animation-delay: 0.42s; }
+.expense-bar-col:nth-child(16) .expense-bar { animation-delay: 0.45s; }
+.expense-bar-col:nth-child(17) .expense-bar { animation-delay: 0.48s; }
+.expense-bar-col:nth-child(18) .expense-bar { animation-delay: 0.51s; }
+.expense-bar-col:nth-child(19) .expense-bar { animation-delay: 0.54s; }
+.expense-bar-col:nth-child(20) .expense-bar { animation-delay: 0.57s; }
+.expense-bar-col:nth-child(21) .expense-bar { animation-delay: 0.60s; }
+.expense-bar-col:nth-child(22) .expense-bar { animation-delay: 0.63s; }
+.expense-bar-col:nth-child(23) .expense-bar { animation-delay: 0.66s; }
+.expense-bar-col:nth-child(24) .expense-bar { animation-delay: 0.69s; }
+.expense-bar-col:nth-child(25) .expense-bar { animation-delay: 0.72s; }
+.expense-bar-col:nth-child(26) .expense-bar { animation-delay: 0.75s; }
+.expense-bar-col:nth-child(27) .expense-bar { animation-delay: 0.78s; }
+.expense-bar-col:nth-child(28) .expense-bar { animation-delay: 0.81s; }
+.expense-bar-col:nth-child(29) .expense-bar { animation-delay: 0.84s; }
+.expense-bar-col:nth-child(30) .expense-bar { animation-delay: 0.87s; }
+.expense-bar-col:nth-child(31) .expense-bar { animation-delay: 0.90s; }
+
+/* ==========================================================================
+   Dark Mode — Expense Tracker overrides
+   ========================================================================== */
+body.dark-theme #expense-tracker-user:not(#view-auth *),
+body.dark-theme #expense-tracker-vendor:not(#view-auth *) {
+  background: rgba(15, 23, 42, 0.72) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+
+body.dark-theme .expense-bar-label:not(#view-auth *) {
+  color: #94a3b8;
+}
+
+body.dark-theme .expense-bar-tooltip:not(#view-auth *) {
+  background: #1e293b;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+body.dark-theme .expense-bar-tooltip::after:not(#view-auth *) {
+  border-top-color: #1e293b;
+}
+
+body.dark-theme #expense-period-toggle:not(#view-auth *),
+body.dark-theme #vendor-expense-period-toggle:not(#view-auth *) {
+  background: rgba(30, 41, 59, 0.8) !important;
+}
+
+body.dark-theme .expense-period-btn:not(.active-period):not(#view-auth *),
+body.dark-theme .vendor-expense-period-btn:not(.active-period-vendor):not(#view-auth *) {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme #expense-total:not(#view-auth *),
+body.dark-theme #expense-avg:not(#view-auth *),
+body.dark-theme #expense-peak:not(#view-auth *),
+body.dark-theme #vendor-expense-total:not(#view-auth *),
+body.dark-theme #vendor-expense-avg:not(#view-auth *),
+body.dark-theme #vendor-expense-peak:not(#view-auth *) {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .expense-chart-bars::before:not(#view-auth *) {
+  background-image: repeating-linear-gradient(
+    to top,
+    rgba(255,255,255,0.06) 0,
+    rgba(255,255,255,0.06) 1px,
+    transparent 1px,
+    transparent 25%
+  );
+}

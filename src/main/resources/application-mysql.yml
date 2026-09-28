@@ -1,0 +1,12 @@
+# Submission profile: MySQL 8 per the approved proposal.
+# Start MySQL first:  docker compose up -d
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:unipay}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Dhaka
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USER:unipay}
+    password: ${MYSQL_PASSWORD:unipay}
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema-mysql.sql

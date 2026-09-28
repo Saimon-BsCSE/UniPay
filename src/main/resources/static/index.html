@@ -1,0 +1,2668 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UniPay — United International University Campus Wallet</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fff7ed', 100: '#ffedd5', 200: '#fed7aa', 300: '#fdba74',
+              400: '#fb923c', 500: '#f26522', 600: '#ea580c', 700: '#c2410c',
+              800: '#9a3412', 900: '#7c2d12'
+            },
+            navy: {
+              800: '#141e33', 900: '#0b132b', 950: '#060a17'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Real-time stack (SockJS fallback transports + STOMP) -->
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.js"></script>
+  <!-- In-browser camera QR scanning -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <link rel="stylesheet" href="/css/style.css?v=8">
+  <script>
+    // Applied here (in <head>) so <html> is themed before first paint.
+    // <body> does not exist yet at this point, so its class is set by the
+    // inline script immediately after the <body> tag opens.
+    (function () {
+      try {
+        if (localStorage.getItem('unipay-theme') === 'dark') {
+          document.documentElement.classList.add('dark-theme');
+        }
+      } catch (e) { /* storage blocked — fall back to light theme */ }
+    })();
+  </script>
+</head>
+
+<body
+  class="min-h-screen bg-slate-50 text-slate-800 font-sans selection:bg-brand-500 selection:text-white">
+  <script>
+    // Runs as soon as <body> is parsed — before any content paints — so the
+    // body-scoped theme rules apply immediately and there is no light flash.
+    if (document.documentElement.classList.contains('dark-theme')) {
+      document.body.classList.add('dark-theme');
+    }
+  </script>
+
+  <!-- ============================= AUTH & LANDING VIEW ============================= -->
+  <div id="view-auth"
+    class="min-h-screen bg-slate-950 text-slate-100 relative selection:bg-brand-500 selection:text-white">
+
+    <!-- Ambient Background Lighting Orbs (clipped so they never widen the page) -->
+    <div class="ambient-layer" aria-hidden="true">
+      <div class="ambient-glow-1 top-10 left-1/4 -translate-x-1/2"></div>
+      <div class="ambient-glow-2 top-96 right-10"></div>
+      <div class="ambient-glow-1 bottom-40 left-10"></div>
+    </div>
+
+    <!-- Sticky Modern Glassmorphic Navigation -->
+    <header class="sticky top-0 z-40 w-full nav-glass">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+        <!-- Brand Logo & Title -->
+        <a href="#" class="flex items-center gap-3 sm:gap-3.5 group min-w-0">
+          <svg class="w-10 h-10 transition-transform group-hover:scale-105 shrink-0" viewBox="0 0 64 64" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="nav-logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0F172A" />
+                <stop offset="100%" stop-color="#070D1E" />
+              </linearGradient>
+              <linearGradient id="nav-logo-orange" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FF923C" />
+                <stop offset="50%" stop-color="#F26522" />
+                <stop offset="100%" stop-color="#C2410C" />
+              </linearGradient>
+              <filter id="nav-logo-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#F26522" flood-opacity="0.45" />
+              </filter>
+            </defs>
+            <rect width="64" height="64" rx="18" fill="url(#nav-logo-bg)" />
+            <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="17.25" stroke="rgba(255,255,255,0.12)"
+              stroke-width="1.5" />
+            <path
+              d="M16 16 C16 14.5 17.5 13.5 19 14.5 L24 18 C25 18.7 25.5 19.8 25.5 21 L25.5 35 C25.5 39.5 28.5 42.5 33 42.5 C37.5 42.5 40.5 39.5 40.5 35 L40.5 21 C40.5 19.8 41 18.7 42 18 L47 14.5 C48.5 13.5 50 14.5 50 16 L50 36 C50 45 42 51 32 51 C22 51 14 45 14 36 Z"
+              fill="url(#nav-logo-orange)" filter="url(#nav-logo-glow)" />
+            <path
+              d="M22 28 C22 22 27 17 33 17 C39 17 44 22 44 28 C44 32 41 35 37 36 C35 36.5 33 35.5 32 34 C31 32.5 31.5 30.5 33 29.5 C34.5 28.5 36 27.5 36 26 C36 24 34.5 22.5 32.5 22.5 C30.5 22.5 29 24 29 26 L29 32 C29 34 27.5 35.5 25.5 35.5 C23.5 35.5 22 34 22 32 Z"
+              fill="#FFFFFF" opacity="0.95" />
+            <circle cx="32" cy="26" r="3" fill="#F26522" />
+            <circle cx="47" cy="18" r="2.5" fill="#38BDF8" />
+          </svg>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-2xl font-black tracking-tight text-white">Uni<span
+                  class="text-brand-500">Pay</span></span>
+              <span
+                class="hidden sm:inline text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">Campus
+                FinTech</span>
+            </div>
+            <span
+              class="hidden xl:block text-[10px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5">United
+              International University</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav Links (lg+ only: at md the 6 links + brand + CTAs overflow) -->
+        <nav class="hidden lg:flex items-center gap-5 xl:gap-7 text-sm font-semibold text-slate-300">
+          <a href="#section-features" class="hover:text-brand-400 transition">Features</a>
+          <a href="#section-splitpay" class="hover:text-brand-400 transition flex items-center gap-1.5">
+            <span>SplitPay</span>
+            <span class="px-1.5 py-0.2 text-[9px] font-black bg-brand-500 text-white rounded-full">POPULAR</span>
+          </a>
+          <a href="#section-merchants" class="hover:text-brand-400 transition">Campus Hotspots</a>
+          <a href="#section-security" class="hover:text-brand-400 transition">Security</a>
+          <a href="#section-faq" class="hover:text-brand-400 transition">FAQ</a>
+          <a href="#section-developers" class="hover:text-brand-400 transition">Team</a>
+        </nav>
+
+        <!-- Action CTAs -->
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+          <a href="#section-auth"
+            class="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-300 hover:text-white bg-slate-900/80 hover:bg-slate-850 border border-slate-800 transition">
+            <span>⚡</span> Demo Accounts
+          </a>
+          <a href="#section-auth" id="nav-login-link"
+            class="text-xs font-bold text-slate-300 hover:text-white px-2 sm:px-3 py-2 transition">
+            Log In
+          </a>
+          <a href="#section-auth" id="nav-register-link"
+            class="btn-primary text-xs py-2.5 px-3 sm:px-4 shadow-md shadow-brand-500/20 whitespace-nowrap">
+            Get Started
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="relative pt-12 pb-20 lg:pt-20 lg:pb-28 overflow-hidden z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+
+          <!-- Left Hero Copy -->
+          <div class="lg:col-span-7 space-y-7 text-left">
+            <div
+              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-300 text-xs font-bold backdrop-blur-md">
+              <span class="live-pulse"></span>
+              <span>Official UIU Digital Campus FinTech · Zero Transaction Fees</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.12] text-white">
+              One Tap for Campus Life.
+              <span class="text-gradient-brand block mt-1">Smart Payments &amp; SplitPay</span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-xl">
+              The next-generation campus wallet for United International University. Experience zero-wait QR payments at
+              canteens, instant student-to-student money transfers, automated loyalty cashback, and real-time meal bill
+              splitting.
+            </p>
+
+            <!-- Hero Action Buttons -->
+            <div class="flex flex-wrap items-center gap-4 pt-2">
+              <a href="#section-auth" class="btn-primary py-3.5 px-7 text-base shadow-xl shadow-brand-500/30 font-bold">
+                🚀 Launch App / Sign In
+              </a>
+              <button type="button" id="btn-hero-demo-saimon"
+                class="btn-ghost py-3.5 px-5 text-sm bg-slate-900/90 hover:bg-slate-800 text-white border-slate-700 backdrop-blur-md font-bold">
+                🎓 Try Student Demo
+              </button>
+              <button type="button" id="btn-hero-demo-canteen"
+                class="btn-ghost py-3.5 px-5 text-sm bg-slate-900/90 hover:bg-slate-800 text-white border-slate-700 backdrop-blur-md font-bold">
+                🏪 Try Vendor POS Demo
+              </button>
+            </div>
+
+            <!-- Feature Quick Badges -->
+            <div class="grid grid-cols-3 gap-4 pt-4 border-t border-slate-800/80 text-xs text-slate-400">
+              <div class="flex items-center gap-2">
+                <span class="text-base text-brand-400">⚡</span>
+                <span class="font-medium">Sub-Second Settlement</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-base text-emerald-400">🛡️</span>
+                <span class="font-medium">Enclosed Campus Safety</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-base text-amber-400">⭐</span>
+                <span class="font-medium">Bonus Loyalty Points</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Hero Interactive Device Showcase -->
+          <div class="lg:col-span-5 hero-card-container">
+            <div class="hero-fintech-card p-6 sm:p-7 relative">
+              <!-- University Header on Card -->
+              <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <div class="flex items-center gap-2.5">
+                  <div
+                    class="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 grid place-items-center text-sm font-black text-white shadow-md">
+                    ৳
+                  </div>
+                  <div>
+                    <div class="text-xs font-black tracking-wide text-white uppercase">UIU Digital Wallet</div>
+                    <div class="text-[10px] text-brand-400 font-bold">United International University</div>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
+                  <span class="live-pulse"></span> STOMP Live
+                </div>
+              </div>
+
+              <!-- Card Chip & Balance Surface -->
+              <div class="my-6">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs uppercase font-bold tracking-wider text-slate-400">Available Campus
+                    Balance</span>
+                  <span class="text-xs font-bold text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded-lg">৳0 Transaction
+                    Fee</span>
+                </div>
+                <div class="text-4xl sm:text-5xl font-black text-white tracking-tight">
+                  ৳1,500<span class="text-2xl font-bold text-slate-400">.00</span>
+                </div>
+                <div class="text-xs text-slate-400 mt-1 flex items-center gap-2">
+                  <span>Verified Holder:</span>
+                  <strong class="text-slate-200">Md Saimon Islam</strong>
+                  <span class="text-[10px] bg-white/10 px-1.5 py-0.5 rounded font-mono text-brand-300">0112330140</span>
+                </div>
+              </div>
+
+              <!-- Interactive Simulation Transaction Feed inside Card -->
+              <div class="space-y-2.5 p-3.5 rounded-2xl bg-black/30 border border-white/10 text-xs">
+                <div
+                  class="flex items-center justify-between text-[11px] text-slate-400 font-bold uppercase tracking-wider pb-1">
+                  <span>Real-Time Activity Simulation</span>
+                  <span class="text-emerald-400 font-semibold">Active Ledger</span>
+                </div>
+                <div class="flex items-center justify-between p-2 rounded-xl bg-white/5 border border-white/5">
+                  <div class="flex items-center gap-2">
+                    <span class="text-base">🍽️</span>
+                    <div>
+                      <div class="font-bold text-white text-xs">UIU Central Canteen</div>
+                      <div class="text-[10px] text-slate-400">Lunch Set A · Just now</div>
+                    </div>
+                  </div>
+                  <div class="font-extrabold text-white text-xs">−৳140.00</div>
+                </div>
+                <div
+                  class="flex items-center justify-between p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                  <div class="flex items-center gap-2">
+                    <span class="text-base">📥</span>
+                    <div>
+                      <div class="font-bold text-emerald-300 text-xs">SplitPay Received</div>
+                      <div class="text-[10px] text-slate-400">From Osama (0112330378)</div>
+                    </div>
+                  </div>
+                  <div class="font-extrabold text-emerald-400 text-xs">+৳150.00</div>
+                </div>
+              </div>
+
+              <!-- Card Quick Action Chips -->
+              <div class="grid grid-cols-3 gap-2 mt-5">
+                <div class="p-2 rounded-xl bg-white/5 border border-white/10 text-center">
+                  <div class="text-base mb-0.5">📷</div>
+                  <div class="text-[10px] font-bold text-slate-200">Scan &amp; Pay</div>
+                </div>
+                <div class="p-2 rounded-xl bg-brand-500/20 border border-brand-500/30 text-center">
+                  <div class="text-base mb-0.5">🍽️</div>
+                  <div class="text-[10px] font-bold text-brand-300">SplitPay</div>
+                </div>
+                <div class="p-2 rounded-xl bg-white/5 border border-white/10 text-center">
+                  <div class="text-base mb-0.5">⭐</div>
+                  <div class="text-[10px] font-bold text-amber-300">+25.00 Pts</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TRUST & METRICS STRIP ==================== -->
+    <section class="py-10 bg-slate-900/60 border-y border-slate-800/80 backdrop-blur-md relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div class="space-y-1">
+            <div class="text-3xl sm:text-4xl font-black text-brand-400 tracking-tight">৳0.00</div>
+            <div class="text-xs uppercase font-bold tracking-wider text-slate-400">Campus Transaction Fee</div>
+            <div class="text-[11px] text-slate-500">100% Free peer &amp; stall payments</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-3xl sm:text-4xl font-black text-emerald-400 tracking-tight">&lt; 1.0s</div>
+            <div class="text-xs uppercase font-bold tracking-wider text-slate-400">Instant Settlement</div>
+            <div class="text-[11px] text-slate-500">Sub-second QR counter processing</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-3xl sm:text-4xl font-black text-blue-400 tracking-tight">100%</div>
+            <div class="text-xs uppercase font-bold tracking-wider text-slate-400">Enclosed Ecosystem</div>
+            <div class="text-[11px] text-slate-500">Verified UIU members &amp; stalls only</div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-3xl sm:text-4xl font-black text-amber-400 tracking-tight">Live 🔔</div>
+            <div class="text-xs uppercase font-bold tracking-wider text-slate-400">STOMP WebSockets</div>
+            <div class="text-[11px] text-slate-500">Instant sound chimes &amp; POS updates</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BENTO GRID FEATURES ==================== -->
+    <section id="section-features" class="py-24 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Section Header -->
+        <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-extrabold border border-brand-500/20">
+            CAMPUS FINTECH CAPABILITIES
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Engineered Exclusively for the University Lifestyle
+          </h2>
+          <p class="text-slate-400 text-base leading-relaxed">
+            From quick canteen lunches to group project expenses and vendor settlement, UniPay delivers a cohesive,
+            zero-friction financial layer for United International University.
+          </p>
+        </div>
+
+        <!-- Bento Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1: QR Canteen Pay -->
+          <div class="bento-card-dark rounded-3xl p-8 space-y-4 relative group">
+            <div class="bento-icon-box bg-brand-500/20 text-brand-400 border border-brand-500/30">
+              📷
+            </div>
+            <h3 class="text-xl font-bold text-white">Zero-Wait QR Payments</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Scan static or dynamic QR codes at UIU Central Canteen, Olympia Cafe, Juice Bar, and Campus Bookshop.
+              Dynamic QRs prevent screenshot replaying and auto-expire in 5 minutes.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-[11px] text-brand-300 font-semibold">
+              <span class="bg-brand-500/10 px-2.5 py-1 rounded-lg border border-brand-500/20">Static Counter QR</span>
+              <span class="bg-brand-500/10 px-2.5 py-1 rounded-lg border border-brand-500/20">Dynamic One-Time QR</span>
+            </div>
+          </div>
+
+          <!-- Card 2: SplitPay -->
+          <div
+            class="bento-card-dark rounded-3xl p-8 space-y-4 relative group border-brand-500/40 bg-gradient-to-b from-navy-900 via-navy-900 to-brand-950/40">
+            <div class="flex items-center justify-between">
+              <div class="bento-icon-box bg-brand-500 text-white shadow-lg shadow-brand-500/30">
+                🍽️
+              </div>
+              <span
+                class="px-2.5 py-0.5 rounded-full bg-brand-500 text-white text-[10px] font-extrabold tracking-wider uppercase">Most
+                Loved</span>
+            </div>
+            <h3 class="text-xl font-bold text-white">SplitPay™ Campus Bill Sharing</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Dine with classmates without messy math. Split any bill evenly or by custom amounts. Your friends receive
+              live notifications, and each payment directly reimburses your wallet balance.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-[11px] text-white font-semibold">
+              <span class="bg-white/10 px-2.5 py-1 rounded-lg">Equal Splits</span>
+              <span class="bg-white/10 px-2.5 py-1 rounded-lg">Custom Weighted Share</span>
+              <span class="bg-white/10 px-2.5 py-1 rounded-lg">Live Progress Tracking</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Instant Student P2P -->
+          <div class="bento-card-dark rounded-3xl p-8 space-y-4 relative group">
+            <div class="bento-icon-box bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              💸
+            </div>
+            <h3 class="text-xl font-bold text-white">Instant Student &amp; Faculty P2P</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Transfer money to any verified UIU ID or 11-digit phone number in milliseconds. Zero transaction fees,
+              atomic ledger balance updates, and permanent idempotency nonces.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-[11px] text-emerald-300 font-semibold">
+              <span class="bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">By Student ID</span>
+              <span class="bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">By Mobile
+                Number</span>
+            </div>
+          </div>
+
+          <!-- Card 4: Vendor POS Terminal -->
+          <div class="bento-card-dark rounded-3xl p-8 space-y-4 relative group">
+            <div class="bento-icon-box bg-blue-500/20 text-blue-400 border border-blue-500/30">
+              🏪
+            </div>
+            <h3 class="text-xl font-bold text-white">Dedicated Merchant POS</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Campus vendors get an all-in-one terminal with live audio chime notifications, today's sales analytics,
+              static QR printing, and simulated withdrawal to bKash, Nagad, Rocket, or Bank accounts.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-[11px] text-blue-300 font-semibold">
+              <span class="bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">Audio Sound Alerts</span>
+              <span class="bg-blue-500/10 px-2.5 py-1 rounded-lg border border-blue-500/20">Daily Sales Counter</span>
+            </div>
+          </div>
+
+          <!-- Card 5: Automated Loyalty Cashback -->
+          <div class="bento-card-dark rounded-3xl p-8 space-y-4 relative group">
+            <div class="bento-icon-box bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              ⭐
+            </div>
+            <h3 class="text-xl font-bold text-white">Automated Loyalty Rewards</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Earn 0.25% in bonus loyalty coins on every <strong class="text-amber-300">purchase</strong> across campus.
+              1 Coin = ৳1.00. Redeem directly for wallet credit once you reach 100 coins.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-[11px] text-amber-300 font-semibold">
+              <span class="bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">0.25% on Purchases</span>
+              <span class="bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">1 Coin = ৳1 Credit</span>
+              <span class="bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/20">100 Coins to Redeem</span>
+            </div>
+          </div>
+
+          <!-- Card 6: Enclosed Safety & Sandboxing -->
+          <div class="bento-card-dark rounded-3xl p-8 space-y-4 relative group">
+            <div class="bento-icon-box bg-purple-500/20 text-purple-400 border border-purple-500/30">
+              🛡️
+            </div>
+            <h3 class="text-xl font-bold text-white">Enclosed Economy Security</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Strictly closed-loop campus economy designed to prevent external fraud. Bank-grade JWT authentication,
+              pessimistic write locks preventing double-spending, and verified role boundaries.
+            </p>
+            <div class="pt-2 flex flex-wrap gap-2 text-[11px] text-purple-300 font-semibold">
+              <span class="bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">JWT
+                Authentication</span>
+              <span class="bg-purple-500/10 px-2.5 py-1 rounded-lg border border-purple-500/20">Double-Spend
+                Prevention</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SPLITPAY INTERACTIVE FLOW ==================== -->
+    <section id="section-splitpay" class="py-20 bg-slate-900/50 border-y border-slate-800/80 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-16 space-y-3">
+          <span
+            class="text-xs font-extrabold uppercase px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
+            HOW SPLITPAY WORKS
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Effortless Dining with Friends in 4 Steps
+          </h2>
+          <p class="text-slate-400 text-sm">
+            No awkward cash collecting or IOUs. Settle the bill right at the table.
+          </p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Step 1 -->
+          <div class="splitpay-step-card bg-slate-900 border-slate-800 text-left">
+            <div class="flex items-center justify-between mb-4">
+              <div class="step-badge">1</div>
+              <span class="text-2xl">🛍️</span>
+            </div>
+            <h4 class="font-bold text-white text-base mb-1.5">Pay at Counter</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              You pay the full bill (e.g. ৳600) at UIU Central Canteen via fast QR scan.
+            </p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="splitpay-step-card bg-slate-900 border-slate-800 text-left">
+            <div class="flex items-center justify-between mb-4">
+              <div class="step-badge">2</div>
+              <span class="text-2xl">👥</span>
+            </div>
+            <h4 class="font-bold text-white text-base mb-1.5">Add Friends</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Open SplitPay, pick your friends (Osama, Sakib, Saimon), and split evenly (৳150 each) or custom.
+            </p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="splitpay-step-card bg-slate-900 border-slate-800 text-left">
+            <div class="flex items-center justify-between mb-4">
+              <div class="step-badge">3</div>
+              <span class="text-2xl">📲</span>
+            </div>
+            <h4 class="font-bold text-white text-base mb-1.5">Instant Request</h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Friends receive a live push alert on their UniPay app with 1-tap "Accept &amp; Pay".
+            </p>
+          </div>
+
+          <!-- Step 4 -->
+          <div
+            class="splitpay-step-card bg-slate-900 border-slate-800 text-left border-brand-500/40 bg-gradient-to-b from-slate-900 to-brand-950/30">
+            <div class="flex items-center justify-between mb-4">
+              <div class="step-badge bg-brand-500 text-white">4</div>
+              <span class="text-2xl">💰</span>
+            </div>
+            <h4 class="font-bold text-white text-base mb-1.5">Reimbursed!</h4>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              As each friend accepts, their share is instantly deposited into your wallet balance in real time!
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CAMPUS HOTSPOTS ==================== -->
+    <section id="section-merchants" class="py-20 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
+          <span
+            class="text-xs font-extrabold uppercase px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+            CAMPUS HOTSPOTS
+          </span>
+          <h2 class="text-3xl font-black text-white tracking-tight">
+            Where You Can Pay with UniPay Right Now
+          </h2>
+          <p class="text-slate-400 text-sm">
+            Accepted across all prime food courts, cafes, and supply stores on the UIU campus.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div class="merchant-badge-card bg-slate-900/80 border-slate-800">
+            <div
+              class="w-11 h-11 rounded-2xl bg-orange-500/10 text-orange-400 grid place-items-center text-xl shrink-0">
+              🍛
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs">UIU Central Canteen</div>
+              <div class="text-[10px] text-slate-400">1st Floor Dining Hall</div>
+            </div>
+          </div>
+
+          <div class="merchant-badge-card bg-slate-900/80 border-slate-800">
+            <div class="w-11 h-11 rounded-2xl bg-amber-500/10 text-amber-400 grid place-items-center text-xl shrink-0">
+              🧃
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs">UIU Juice Bar</div>
+              <div class="text-[10px] text-slate-400">Ground Courtyard</div>
+            </div>
+          </div>
+
+          <div class="merchant-badge-card bg-slate-900/80 border-slate-800">
+            <div class="w-11 h-11 rounded-2xl bg-blue-500/10 text-blue-400 grid place-items-center text-xl shrink-0">
+              📚
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs">Campus Book Shop</div>
+              <div class="text-[10px] text-slate-400">Library Block</div>
+            </div>
+          </div>
+
+          <div class="merchant-badge-card bg-slate-900/80 border-slate-800">
+            <div
+              class="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-400 grid place-items-center text-xl shrink-0">
+              🥐
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs">Olympia Cafe &amp; Bakery</div>
+              <div class="text-[10px] text-slate-400">Student Lounge</div>
+            </div>
+          </div>
+
+          <div class="merchant-badge-card bg-slate-900/80 border-slate-800">
+            <div class="w-11 h-11 rounded-2xl bg-red-500/10 text-red-400 grid place-items-center text-xl shrink-0">
+              🥟
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs">Campus Samosa Corner</div>
+              <div class="text-[10px] text-slate-400">Walkway Kiosk</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SECURITY SECTION ==================== -->
+    <section id="section-security" class="py-16 bg-slate-900/40 border-t border-slate-800/80 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="bg-gradient-to-r from-navy-900 via-slate-900 to-navy-950 rounded-3xl p-8 sm:p-10 border border-slate-800 relative overflow-hidden">
+          <div class="grid lg:grid-cols-3 gap-8 items-center">
+            <div class="lg:col-span-2 space-y-3">
+              <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🛡️</span> Bank-Grade Campus Security Architecture
+              </span>
+              <h3 class="text-2xl sm:text-3xl font-black text-white">
+                Zero Leakage. Verified Identities. Cryptographic Safety.
+              </h3>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                Every transaction is protected by cryptographic idempotency keys, JWT bearer signatures, and pessimistic
+                database row locking to guarantee zero double-spending. The closed-loop architecture ensures campus
+                funds remain safe inside UIU.
+              </p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 text-xs font-bold text-slate-300">
+              <div class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/60">
+                <div class="text-emerald-400 text-base mb-1">🔐</div>
+                <div>JWT Signed Bearer Tokens</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/60">
+                <div class="text-brand-400 text-base mb-1">⚡</div>
+                <div>UUIDv4 Nonce Idempotency</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/60">
+                <div class="text-blue-400 text-base mb-1">🏛️</div>
+                <div>Strict Role Verification</div>
+              </div>
+              <div class="p-3.5 rounded-2xl bg-slate-800/60 border border-slate-700/60">
+                <div class="text-amber-400 text-base mb-1">🔒</div>
+                <div>Zero Double-Spend DB Locks</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== AUTH & DEMO ACCESS SECTION ==================== -->
+    <section id="section-auth" class="py-24 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
+          <span
+            class="text-xs font-extrabold uppercase px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20">
+            SIGN IN &amp; DEMO SANDBOX
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-black text-white tracking-tight">
+            Ready to Step Into the Future of Campus FinTech?
+          </h2>
+          <p class="text-slate-400 text-sm">
+            Log in with your UIU ID or click any verified demo profile below to test features instantly.
+          </p>
+        </div>
+
+        <div class="grid lg:grid-cols-12 gap-10 items-start">
+
+          <!-- Left: 1-Click Demo Profiles Showcase -->
+          <div class="lg:col-span-6 space-y-4">
+            <div class="p-6 rounded-3xl bg-slate-900 border border-slate-800">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span>⚡</span> 1-Click Interactive Demo Access
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-0.5">
+                    Click any profile to instantly authenticate with pre-filled credentials (<code
+                      class="text-brand-400 font-bold">demo1234</code>)
+                  </p>
+                </div>
+              </div>
+
+              <div class="grid sm:grid-cols-2 gap-3">
+                <!-- Student 1: Saimon -->
+                <button type="button" class="demo-profile-card demo-chip" data-id="0112330140">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="demo-profile-name text-xs font-bold text-slate-900">🎓 Md Saimon Islam</span>
+                    <span
+                      class="text-[10px] font-bold text-brand-600 bg-brand-100/90 px-1.5 py-0.5 rounded">Student</span>
+                  </div>
+                  <div class="demo-profile-id text-[11px] text-slate-500 font-mono">ID: 0112330140</div>
+                  <div class="demo-profile-balance text-xs font-extrabold text-emerald-700 mt-1">৳1,500.00 Balance</div>
+                </button>
+
+                <!-- Student 2: Osama -->
+                <button type="button" class="demo-profile-card demo-chip" data-id="0112330378">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="demo-profile-name text-xs font-bold text-slate-900">🎓 Osama Bin Mansur</span>
+                    <span
+                      class="text-[10px] font-bold text-brand-600 bg-brand-100/90 px-1.5 py-0.5 rounded">Student</span>
+                  </div>
+                  <div class="demo-profile-id text-[11px] text-slate-500 font-mono">ID: 0112330378</div>
+                  <div class="demo-profile-balance text-xs font-extrabold text-emerald-700 mt-1">৳1,200.00 Balance</div>
+                </button>
+
+                <!-- Student 3: Sakib -->
+                <button type="button" class="demo-profile-card demo-chip" data-id="0112330586">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="demo-profile-name text-xs font-bold text-slate-900">🎓 Md Sadman Sakib</span>
+                    <span
+                      class="text-[10px] font-bold text-brand-600 bg-brand-100/90 px-1.5 py-0.5 rounded">Student</span>
+                  </div>
+                  <div class="demo-profile-id text-[11px] text-slate-500 font-mono">ID: 0112330586</div>
+                  <div class="demo-profile-balance text-xs font-extrabold text-emerald-700 mt-1">৳800.00 Balance</div>
+                </button>
+
+                <!-- Faculty: Dr. Nafees Ahmed -->
+                <button type="button" class="demo-profile-card demo-chip" data-id="0111910667">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="demo-profile-name text-xs font-bold text-slate-900">👨‍🏫 Dr. Nafees Ahmed</span>
+                    <span
+                      class="text-[10px] font-bold text-blue-700 bg-blue-100/90 px-1.5 py-0.5 rounded">Faculty</span>
+                  </div>
+                  <div class="demo-profile-id text-[11px] text-slate-500 font-mono">ID: 0111910667</div>
+                  <div class="demo-profile-balance text-xs font-extrabold text-emerald-700 mt-1">৳2,000.00 Balance</div>
+                </button>
+
+                <!-- Vendor 1: UIU Central Canteen -->
+                <button type="button" class="demo-profile-card demo-chip" data-id="V-CAFE-01">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="demo-profile-name text-xs font-bold text-slate-900">🏪 UIU Central Canteen</span>
+                    <span class="text-[10px] font-bold text-purple-700 bg-purple-100/90 px-1.5 py-0.5 rounded">Vendor
+                      POS</span>
+                  </div>
+                  <div class="demo-profile-id text-[11px] text-slate-500 font-mono">Terminal: V-CAFE-01</div>
+                  <div class="demo-profile-balance text-xs font-extrabold text-brand-700 mt-1">Merchant Terminal Mode
+                  </div>
+                </button>
+
+                <!-- Vendor 2: Campus Book Shop -->
+                <button type="button" class="demo-profile-card demo-chip" data-id="V-BOOK-01">
+                  <div class="flex items-center justify-between mb-1.5">
+                    <span class="demo-profile-name text-xs font-bold text-slate-900">📚 UIU Book Shop</span>
+                    <span class="text-[10px] font-bold text-purple-700 bg-purple-100/90 px-1.5 py-0.5 rounded">Vendor
+                      POS</span>
+                  </div>
+                  <div class="demo-profile-id text-[11px] text-slate-500 font-mono">Terminal: V-BOOK-01</div>
+                  <div class="demo-profile-balance text-xs font-extrabold text-brand-700 mt-1">Bookstore Terminal Mode
+                  </div>
+                </button>
+              </div>
+
+              <!-- Testing Sandbox Note -->
+              <div
+                class="mt-4 p-3 rounded-2xl bg-slate-800/80 border border-slate-700/80 text-[11px] text-slate-300 flex items-start gap-2">
+                <span class="text-base leading-none">💡</span>
+                <p class="leading-relaxed">
+                  <strong>Simulated MFS Sandbox:</strong> Use OTP <code
+                    class="bg-slate-700 text-brand-300 px-1.5 py-0.5 rounded font-mono font-bold">123456</code> to add
+                  test money into any student account via bKash, Nagad, or Rocket.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: The Modern Auth Box Card with Glassmorphism -->
+          <div id="auth-card-panel" class="lg:col-span-6 auth-card-panel rounded-3xl shadow-2xl p-8 relative">
+            <div class="flex items-center gap-3 mb-6">
+              <svg class="w-10 h-10 shrink-0" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="card-logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#0F172A" />
+                    <stop offset="100%" stop-color="#070D1E" />
+                  </linearGradient>
+                  <linearGradient id="card-logo-orange" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#FF923C" />
+                    <stop offset="50%" stop-color="#F26522" />
+                    <stop offset="100%" stop-color="#C2410C" />
+                  </linearGradient>
+                </defs>
+                <rect width="64" height="64" rx="18" fill="url(#card-logo-bg)" />
+                <path
+                  d="M16 16 C16 14.5 17.5 13.5 19 14.5 L24 18 C25 18.7 25.5 19.8 25.5 21 L25.5 35 C25.5 39.5 28.5 42.5 33 42.5 C37.5 42.5 40.5 39.5 40.5 35 L40.5 21 C40.5 19.8 41 18.7 42 18 L47 14.5 C48.5 13.5 50 14.5 50 16 L50 36 C50 45 42 51 32 51 C22 51 14 45 14 36 Z"
+                  fill="url(#card-logo-orange)" />
+                <path
+                  d="M22 28 C22 22 27 17 33 17 C39 17 44 22 44 28 C44 32 41 35 37 36 C35 36.5 33 35.5 32 34 C31 32.5 31.5 30.5 33 29.5 C34.5 28.5 36 27.5 36 26 C36 24 34.5 22.5 32.5 22.5 C30.5 22.5 29 24 29 26 L29 32 C29 34 27.5 35.5 25.5 35.5 C23.5 35.5 22 34 22 32 Z"
+                  fill="#FFFFFF" opacity="0.95" />
+                <circle cx="32" cy="26" r="3" fill="#F26522" />
+                <circle cx="47" cy="18" r="2.5" fill="#38BDF8" />
+              </svg>
+              <div>
+                <span class="text-2xl font-extrabold text-slate-900 block tracking-tight">Access UniPay Portal</span>
+                <span class="text-xs font-bold text-brand-600 uppercase tracking-wider">United International
+                  University</span>
+              </div>
+            </div>
+
+            <!-- Auth Tab Switcher with Glassmorphic Container -->
+            <div class="flex gap-2 p-1.5 auth-tab-container rounded-2xl mb-6">
+              <button id="tab-login" class="flex-1 py-2.5 rounded-xl text-sm font-bold auth-tab active">Log in</button>
+              <button id="tab-register" class="flex-1 py-2.5 rounded-xl text-sm font-bold auth-tab">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="form-login" class="space-y-4">
+              <div>
+                <label class="lbl">UIU Student / Faculty / Vendor ID</label>
+                <input id="login-id" class="inp" placeholder="e.g. 0112330140" autocomplete="username">
+              </div>
+              <div>
+                <label class="lbl">Password</label>
+                <input id="login-pass" type="password" class="inp" placeholder="••••••••"
+                  autocomplete="current-password">
+              </div>
+              <p id="login-error"
+                class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100"></p>
+              <button type="submit" class="btn-primary w-full py-3.5 text-base shadow-lg shadow-brand-500/25">Log in to
+                UniPay</button>
+              <p class="text-xs text-slate-500 text-center pt-2">
+                Demo password for all: <code
+                  class="bg-slate-100 text-brand-700 px-1.5 py-0.5 rounded font-bold">demo1234</code>
+              </p>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="form-register" class="space-y-4 hidden">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="lbl">University ID</label>
+                  <input id="reg-id" class="inp" placeholder="0112330999">
+                </div>
+                <div>
+                  <label class="lbl">Phone Number</label>
+                  <input id="reg-phone" class="inp" placeholder="01712345699">
+                </div>
+              </div>
+              <div>
+                <label class="lbl">Full Name</label>
+                <input id="reg-name" class="inp" placeholder="Your full name">
+              </div>
+              <div>
+                <label class="lbl">Password</label>
+                <input id="reg-pass" type="password" class="inp" placeholder="min 6 characters">
+              </div>
+              <div>
+                <label class="lbl">Role in UIU</label>
+                <select id="reg-role" class="inp">
+                  <option value="STUDENT">Student</option>
+                  <option value="FACULTY">Faculty</option>
+                  <option value="STAFF">Staff</option>
+                  <option value="VENDOR">Vendor (Campus stall)</option>
+                </select>
+              </div>
+              <div id="reg-vendor-fields"
+                class="space-y-3 hidden p-4 bg-brand-50/60 rounded-2xl border border-brand-100">
+                <div>
+                  <label class="lbl text-brand-900">Stall Name</label>
+                  <input id="reg-stall" class="inp" placeholder="e.g. UIU Juice Bar">
+                </div>
+                <div>
+                  <label class="lbl text-brand-900">Stall Category</label>
+                  <select id="reg-category" class="inp">
+                    <option value="CANTEEN">Canteen</option>
+                    <option value="BOOKSHOP">Bookshop</option>
+                    <option value="FOOD_STALL">Food stall</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                </div>
+              </div>
+              <p id="register-error"
+                class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100"></p>
+              <button type="submit" class="btn-primary w-full py-3.5 text-base shadow-lg shadow-brand-500/25">Create
+                Campus Account</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== INTERACTIVE FAQ ==================== -->
+    <section id="section-faq" class="py-20 bg-slate-900/40 border-t border-slate-800/80 relative z-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-14 space-y-3">
+          <span
+            class="text-xs font-extrabold uppercase px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+            FREQUENTLY ASKED QUESTIONS
+          </span>
+          <h2 class="text-3xl font-black text-white tracking-tight">
+            Everything You Need to Know
+          </h2>
+        </div>
+
+        <div class="space-y-3 text-left">
+          <details class="faq-item" open>
+            <summary class="text-sm">
+              <span>Who can register and use UniPay?</span>
+              <span class="faq-chevron">▼</span>
+            </summary>
+            <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+              UniPay is restricted to authenticated members of United International University. This includes all active
+              undergraduate and graduate students, faculty members, administrative staff, and authorized campus
+              vendors/stalls operating on campus.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="text-sm">
+              <span>Are there any transaction fees for peer or canteen payments?</span>
+              <span class="faq-chevron">▼</span>
+            </summary>
+            <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+              No! All internal campus transactions are 100% free with ৳0.00 processing fees. Whether you're paying at
+              the UIU Central Canteen or transferring money to a classmate for study materials, you pay exact amounts
+              without hidden cuts.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="text-sm">
+              <span>How does SplitPay work for group canteen lunches?</span>
+              <span class="faq-chevron">▼</span>
+            </summary>
+            <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+              One student pays the counter bill using QR Scan. Afterward, that student opens SplitPay, creates a bill
+              for the total amount, and selects friends. Friends immediately receive a live push alert with a 1-tap
+              Accept button. When friends accept, funds are transferred straight into the creator's wallet.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="text-sm">
+              <span>How do campus vendors receive payments?</span>
+              <span class="faq-chevron">▼</span>
+            </summary>
+            <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+              Vendors have a dedicated Merchant POS Terminal. They can display either a static QR code on their counter
+              or generate dynamic one-time QR codes for exact bills. Payments trigger instant audio sound chimes and
+              increment their daily revenue statistics.
+            </p>
+          </details>
+
+          <details class="faq-item">
+            <summary class="text-sm">
+              <span>How does the simulated MFS Add Money work?</span>
+              <span class="faq-chevron">▼</span>
+            </summary>
+            <p class="text-xs text-slate-600 mt-2.5 leading-relaxed">
+              UniPay features an integrated sandbox simulator for bKash, Nagad, and Rocket. In demo mode, enter your
+              11-digit mobile number and use the sandbox OTP <code
+                class="bg-slate-100 text-brand-600 px-1 py-0.5 rounded font-bold">123456</code> to instantly credit your
+              campus wallet.
+            </p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MODERN FOOTER ==================== -->
+    <footer class="py-14 bg-slate-950 border-t border-slate-800/80 text-xs text-slate-400 relative z-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800/80">
+          <div class="flex items-center gap-3">
+            <svg class="w-8 h-8 shrink-0" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="64" height="64" rx="18" fill="#0F172A" />
+              <path
+                d="M16 16 C16 14.5 17.5 13.5 19 14.5 L24 18 C25 18.7 25.5 19.8 25.5 21 L25.5 35 C25.5 39.5 28.5 42.5 33 42.5 C37.5 42.5 40.5 39.5 40.5 35 L40.5 21 C40.5 19.8 41 18.7 42 18 L47 14.5 C48.5 13.5 50 14.5 50 16 L50 36 C50 45 42 51 32 51 C22 51 14 45 14 36 Z"
+                fill="#F26522" />
+              <path
+                d="M22 28 C22 22 27 17 33 17 C39 17 44 22 44 28 C44 32 41 35 37 36 C35 36.5 33 35.5 32 34 C31 32.5 31.5 30.5 33 29.5 C34.5 28.5 36 27.5 36 26 C36 24 34.5 22.5 32.5 22.5 C30.5 22.5 29 24 29 26 L29 32 C29 34 27.5 35.5 25.5 35.5 C23.5 35.5 22 34 22 32 Z"
+                fill="#FFFFFF" opacity="0.95" />
+            </svg>
+            <div>
+              <div class="font-extrabold text-sm text-white">UniPay</div>
+              <div class="text-[11px] text-slate-400">United International University Digital Campus Wallet</div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:gap-6 text-slate-400 font-medium">
+            <a href="#section-features" class="hover:text-brand-400 transition">Features</a>
+            <a href="#section-splitpay" class="hover:text-brand-400 transition">SplitPay</a>
+            <a href="#section-merchants" class="hover:text-brand-400 transition">Hotspots</a>
+            <a href="#section-security" class="hover:text-brand-400 transition">Security</a>
+            <a href="#section-faq" class="hover:text-brand-400 transition">FAQ</a>
+            <a href="#section-developers" class="hover:text-brand-400 transition">Team</a>
+            <a href="#section-auth" class="hover:text-brand-400 transition font-bold text-white">Portal</a>
+          </div>
+        </div>
+
+        <!-- ==================== DEVELOPERS ATTRIBUTION ==================== -->
+        <div id="section-developers" class="py-8 my-6 border-b border-slate-800/80">
+          <div class="text-center mb-6">
+            <div
+              class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-bold uppercase tracking-wider mb-2">
+              <span>💻</span> Engineering &amp; Development
+            </div>
+            <h4 class="text-base sm:text-lg font-extrabold text-white">Designed &amp; Engineered by UIU Students</h4>
+            <p class="text-xs text-slate-400 mt-1">Advanced OOP Project · United International University</p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+            <!-- Developer 1: Md Saimon Islam -->
+            <article
+              class="dev-card group relative rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-950 border border-slate-800 p-4 transition-all duration-300 hover:border-brand-500/50 hover:shadow-lg hover:shadow-brand-500/10 flex items-center gap-3.5">
+              <span class="dev-avatar dev-avatar--brand shrink-0">
+                <img src="/img/dev-saimon.jpg" alt="Portrait of Md Saimon Islam, software engineer at UIU" width="400"
+                  height="404" decoding="async" fetchpriority="low" class="dev-avatar-img">
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <a href="https://www.facebook.com/share/1DSYR5qzmG/" target="_blank" rel="noopener noreferrer"
+                    aria-label="Md Saimon Islam on Facebook (opens in a new tab)"
+                    class="dev-name font-bold text-sm text-white hover:text-brand-400 transition-colors">Md Saimon
+                    Islam</a>
+                  <span
+                    class="px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-400 text-[10px] font-extrabold border border-brand-500/25">Engineer</span>
+                  <a href="https://www.facebook.com/share/1DSYR5qzmG/" target="_blank" rel="noopener noreferrer"
+                    aria-label="Md Saimon Islam on Facebook (opens in a new tab)" title="Facebook profile"
+                    class="dev-fb dev-fb--brand shrink-0">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path
+                        d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06C2 17.08 5.66 21.24 10.44 22v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.45 2.91h-2.33V22C18.34 21.24 22 17.08 22 12.06Z" />
+                    </svg>
+                  </a>
+                </div>
+                <div class="text-xs text-slate-300 font-medium mt-0.5">Software Engineer</div>
+                <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span>🎓 BSCSE Student</span>
+                  <span>•</span>
+                  <span>UIU</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Developer 2: Osama Bin Mansur -->
+            <article
+              class="dev-card group relative rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-950 border border-slate-800 p-4 transition-all duration-300 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/10 flex items-center gap-3.5">
+              <span class="dev-avatar dev-avatar--blue shrink-0">
+                <img src="/img/dev-osama.jpg" alt="Portrait of Osama Bin Mansur, software engineer at UIU" width="400"
+                  height="505" decoding="async" fetchpriority="low" class="dev-avatar-img">
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <a href="https://www.facebook.com/share/1Dksfxrkfh/" target="_blank" rel="noopener noreferrer"
+                    aria-label="Osama Bin Mansur on Facebook (opens in a new tab)"
+                    class="dev-name font-bold text-sm text-white hover:text-blue-400 transition-colors">Osama Bin
+                    Mansur</a>
+                  <span
+                    class="px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-400 text-[10px] font-extrabold border border-blue-500/25">Engineer</span>
+                  <a href="https://www.facebook.com/share/1Dksfxrkfh/" target="_blank" rel="noopener noreferrer"
+                    aria-label="Osama Bin Mansur on Facebook (opens in a new tab)" title="Facebook profile"
+                    class="dev-fb dev-fb--blue shrink-0">
+                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                      <path
+                        d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06C2 17.08 5.66 21.24 10.44 22v-7.03H7.9v-2.91h2.54V9.85c0-2.52 1.49-3.91 3.77-3.91 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.45 2.91h-2.33V22C18.34 21.24 22 17.08 22 12.06Z" />
+                    </svg>
+                  </a>
+                </div>
+                <div class="text-xs text-slate-300 font-medium mt-0.5">Software Engineer</div>
+                <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span>🎓 BSCSE Student</span>
+                  <span>•</span>
+                  <span>UIU</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+          <div>
+            United City, Madani Avenue, Badda, Dhaka 1212, Bangladesh
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="inline-flex items-center gap-1 text-emerald-400 font-semibold">
+              <span class="live-pulse"></span> All Systems Operational · WebSockets Live
+            </span>
+            <span>© 2026 UniPay. All rights reserved.</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============================= APP VIEW ============================= -->
+  <div id="view-app" class="hidden min-h-screen pb-16 relative overflow-x-hidden">
+    <!-- Atmospheric Ambient Glow Orbs for Glassmorphism (clipped container) -->
+    <div class="ambient-layer" aria-hidden="true">
+      <div class="ambient-glow-1 top-20 -left-24 pointer-events-none opacity-40"></div>
+      <div class="ambient-glow-2 top-96 -right-24 pointer-events-none opacity-40"></div>
+      <div class="ambient-glow-1 bottom-40 left-1/3 pointer-events-none opacity-30"></div>
+    </div>
+
+    <!-- Top bar with UIU Branding -->
+    <header class="text-white sticky top-0 z-30 shadow-lg border-b border-white/10 glass-header">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 sm:gap-3">
+        <!-- Modern Redesigned App Logo -->
+        <svg class="w-9 h-9 shrink-0" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="topbar-logo-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#0F172A" />
+              <stop offset="100%" stop-color="#070D1E" />
+            </linearGradient>
+            <linearGradient id="topbar-logo-orange" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FF923C" />
+              <stop offset="50%" stop-color="#F26522" />
+              <stop offset="100%" stop-color="#C2410C" />
+            </linearGradient>
+          </defs>
+          <rect width="64" height="64" rx="18" fill="url(#topbar-logo-bg)" />
+          <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="17.25" stroke="rgba(255,255,255,0.12)"
+            stroke-width="1.5" />
+          <path
+            d="M16 16 C16 14.5 17.5 13.5 19 14.5 L24 18 C25 18.7 25.5 19.8 25.5 21 L25.5 35 C25.5 39.5 28.5 42.5 33 42.5 C37.5 42.5 40.5 39.5 40.5 35 L40.5 21 C40.5 19.8 41 18.7 42 18 L47 14.5 C48.5 13.5 50 14.5 50 16 L50 36 C50 45 42 51 32 51 C22 51 14 45 14 36 Z"
+            fill="url(#topbar-logo-orange)" />
+          <path
+            d="M22 28 C22 22 27 17 33 17 C39 17 44 22 44 28 C44 32 41 35 37 36 C35 36.5 33 35.5 32 34 C31 32.5 31.5 30.5 33 29.5 C34.5 28.5 36 27.5 36 26 C36 24 34.5 22.5 32.5 22.5 C30.5 22.5 29 24 29 26 L29 32 C29 34 27.5 35.5 25.5 35.5 C23.5 35.5 22 34 22 32 Z"
+            fill="#FFFFFF" opacity="0.95" />
+          <circle cx="32" cy="26" r="3" fill="#F26522" />
+          <circle cx="47" cy="18" r="2.5" fill="#38BDF8" />
+        </svg>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight shrink-0">UniPay</span>
+            <span id="ws-badge"
+              class="hidden sm:inline text-[11px] px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 font-semibold"
+              title="Real-time connection">● offline</span>
+          </div>
+          <span
+            class="hidden xl:block text-[10px] text-slate-400 font-semibold uppercase tracking-wider -mt-0.5">United
+            International University</span>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <!-- SplitPay incoming requests notification bell -->
+        <button id="btn-split-badge"
+          class="hidden relative p-2 rounded-xl bg-navy-800 hover:bg-navy-700 text-brand-400 text-sm font-bold transition flex items-center gap-1.5"
+          title="SplitPay requests">
+          <span>🍽️</span>
+          <span id="split-badge-count"
+            class="px-1.5 py-0.2 bg-brand-500 text-white text-[11px] font-extrabold rounded-full">0</span>
+        </button>
+
+        <!-- Unified Notification & Alert Button (View past notifications + Unread badge + Sound state) -->
+        <button id="btn-notifications"
+          class="relative w-9 h-9 rounded-xl bg-navy-800 hover:bg-navy-700 grid place-items-center text-sm transition text-slate-200 hover:text-white"
+          title="Notifications & Alerts">
+          <span id="btn-notif-bell-icon">🔔</span>
+          <span id="notif-badge-count"
+            class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-brand-500 text-white text-[10px] font-black rounded-full flex items-center justify-center ring-2 ring-navy-900 shadow-sm animate-pulse">0</span>
+        </button>
+
+        <!-- Dark / Light Theme Toggle Button -->
+        <button id="btn-theme-toggle"
+          class="w-9 h-9 rounded-xl bg-navy-800 hover:bg-navy-700 grid place-items-center text-sm transition text-amber-300 hover:text-amber-200"
+          title="Toggle Dark/Light Mode">
+          <span id="theme-toggle-icon">🌙</span>
+        </button>
+
+        <!-- User Profile Button with Icon -->
+        <button id="btn-topbar-profile"
+          class="shrink-0 flex items-center gap-2.5 px-2 sm:px-3 py-1.5 rounded-2xl bg-navy-800 hover:bg-navy-700 hover:ring-2 hover:ring-brand-500/50 transition cursor-pointer text-left border border-navy-700/60 shadow-sm group"
+          title="Click to view &amp; edit your profile">
+          <div
+            class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-600 to-amber-500 text-white flex items-center justify-center font-bold text-sm shadow-inner group-hover:scale-105 transition-transform"
+            id="topbar-avatar-icon">
+            👤
+          </div>
+          <div class="hidden sm:block leading-tight">
+            <div id="topbar-name" class="text-xs font-bold text-white group-hover:text-brand-300 transition"></div>
+            <div id="topbar-id" class="text-[10px] text-brand-300 font-medium"></div>
+          </div>
+          <span class="text-slate-400 text-xs hidden sm:inline group-hover:text-white transition">✏️</span>
+        </button>
+
+        <!-- Icon-only below sm so the topbar never pushes controls off-screen -->
+        <button id="btn-logout"
+          class="shrink-0 text-xs font-bold px-2.5 sm:px-3.5 py-2 rounded-xl bg-navy-800 hover:bg-red-600 transition flex items-center justify-center gap-1.5"
+          title="Log out" aria-label="Log out">
+          <span aria-hidden="true">⏻</span>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+
+      <!-- ====================== USER DASHBOARD ====================== -->
+      <section id="dash-user" class="hidden space-y-6">
+        <!-- ====================== HERO SECTION: 3D CARD (LEFT) & 2x2 ACTIONS (RIGHT) ====================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+          <!-- Left: Slick 3D UniPay Campus Smart Card (7 Cols) -->
+          <div class="lg:col-span-7 flex flex-col justify-center">
+            <div class="card-3d-scene">
+              <div id="card-3d-stage" class="card-3d-stage group">
+                <div id="card-3d-flipper" class="card-3d-flipper">
+
+                  <!-- FRONT OF CARD -->
+                  <div class="card-face card-front">
+                    <!-- Top Row: UniPay Logo & Name + NFC + Flip Button -->
+                    <div class="flex items-center justify-between z-10">
+                      <div class="flex items-center gap-2.5">
+                        <div
+                          class="w-9 h-9 rounded-xl bg-white/15 border border-white/25 p-1 flex items-center justify-center shadow-inner shrink-0 backdrop-blur-md">
+                          <img src="/favicon.svg" alt="UniPay Logo" class="w-full h-full object-contain drop-shadow" />
+                        </div>
+                        <div>
+                          <div
+                            class="text-[11px] font-extrabold tracking-wider uppercase text-white/95 leading-tight flex items-center gap-1.5">
+                            <span>UniPay</span>
+                            <span
+                              class="text-[8px] px-1.5 py-0.2 rounded-full bg-brand-500/80 text-white font-mono font-bold tracking-normal">CAMPUS
+                              PASS</span>
+                          </div>
+                          <div class="hidden sm:block text-[9px] font-bold tracking-widest text-brand-300 uppercase">
+                            Campus Smart Pass · Enclosed Pay</div>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <!-- Contactless symbol -->
+                        <div class="contactless-waves text-brand-300/80 text-sm" title="Contactless NFC Pay">
+                          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M8.5 16.5a5 5 0 0 1 0-7" />
+                            <path d="M11.5 19.5a9 9 0 0 1 0-13" />
+                            <path d="M14.5 22.5a13 13 0 0 1 0-19" />
+                          </svg>
+                        </div>
+                        <!-- Flip Button -->
+                        <button type="button" id="btn-card-flip"
+                          class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-bold text-slate-200 border border-white/15 transition flex items-center gap-1 backdrop-blur-md"
+                          title="Flip to see card back">
+                          <span>🔄</span> <span>Flip</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Middle Row: EMV Chip + UIU Security Hologram Seal + Role Badge -->
+                    <div class="flex items-center justify-between my-auto py-1 z-10">
+                      <div class="flex items-center gap-3">
+                        <div class="emv-chip" title="EMV Contact Chip"></div>
+                        <!-- Authentic UIU Security Hologram Seal -->
+                        <div class="card-hologram-seal" title="Authentic UIU Security Hologram">
+                          <img src="/img/uiu-logo.png" alt="Authentic UIU Security Hologram"
+                            class="card-hologram-img" />
+                          <div class="card-hologram-shimmer"></div>
+                        </div>
+                      </div>
+                      <div id="user-role-badge"
+                        class="px-3 py-1 rounded-full bg-white/15 border border-white/20 text-white text-[11px] font-bold backdrop-blur-md shadow-sm">
+                        🎓 UIU Student Verified
+                      </div>
+                    </div>
+
+                    <!-- Available Balance & Card Number -->
+                    <div class="space-y-2 z-10">
+                      <div class="flex items-center justify-between">
+                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-300">Available
+                          Balance</span>
+                        <button type="button" id="btn-toggle-balance-vis"
+                          class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1"
+                          title="Toggle balance privacy">
+                          <span id="balance-eye-icon">👁️</span>
+                          <span id="balance-eye-text" class="text-[10px]">Hide</span>
+                        </button>
+                      </div>
+                      <div id="user-balance"
+                        class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-mono drop-shadow-md">
+                        ৳0.00
+                      </div>
+
+                      <!-- Valid UIU ID Given by User -->
+                      <div class="flex items-center justify-between pt-1 border-t border-white/10">
+                        <div>
+                          <div class="text-[8px] uppercase tracking-widest text-slate-300 font-bold">UIU ID / Smart Pass
+                          </div>
+                          <span id="card-number-display"
+                            class="card-pan-text text-base sm:text-lg font-mono tracking-widest">011 •••• 0140</span>
+                        </div>
+                        <button type="button" id="btn-toggle-pan-mask"
+                          class="text-slate-300 hover:text-white text-xs p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
+                          title="Reveal / mask UIU ID">
+                          <span>👁️</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Bottom Row: Cardholder + Expiry + UniPay Logo & Sign Badges -->
+                    <div class="flex items-end justify-between pt-2 z-10">
+                      <div>
+                        <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Cardholder</div>
+                        <div id="card-holder-name"
+                          class="font-bold text-xs sm:text-sm uppercase tracking-wider text-white font-mono truncate max-w-[100px] sm:max-w-[170px]">
+                          UIU MEMBER
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Expires</div>
+                        <div id="card-expiry-display" class="font-mono text-xs font-bold text-amber-300 tracking-wider">
+                          12/28
+                        </div>
+                      </div>
+
+                      <!-- UniPay Brand in Iconic Visa Card Logo Style -->
+                      <div class="unipay-visa-badge flex flex-col items-end shrink-0 pl-1.5 sm:pl-3"
+                        title="UniPay Smart Card · Visa Style">
+                        <div class="flex items-center">
+                          <svg class="h-5 sm:h-7 w-auto drop-shadow-md overflow-visible" viewBox="0 0 130 36"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                              <linearGradient id="visa-gold-wing" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FDE68A" />
+                                <stop offset="50%" stop-color="#F59E0B" />
+                                <stop offset="100%" stop-color="#D97706" />
+                              </linearGradient>
+                            </defs>
+                            <!-- Iconic Visa Golden Wing Accent on top-left of 'U' -->
+                            <polygon points="12,5 2,17 15,17" fill="url(#visa-gold-wing)" />
+                            <!-- Italicized, bold sans serif UniPay in Visa typography -->
+                            <text x="14" y="28" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+                              font-weight="900" font-style="italic" font-size="30" letter-spacing="-1.2"
+                              fill="#FFFFFF">Uni<tspan fill="#FDBA74">Pay</tspan></text>
+                          </svg>
+                        </div>
+                        <div
+                          class="hidden sm:block text-[7.5px] uppercase font-black tracking-[0.25em] text-amber-300 italic -mt-0.5 drop-shadow-sm font-sans">
+                          CAMPUS PASS
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Dynamic Glare Layer -->
+                    <div id="card-glare-front" class="card-glare"></div>
+                  </div>
+
+                  <!-- BACK OF CARD -->
+                  <div class="card-face card-back">
+                    <!-- Magnetic Stripe -->
+                    <div class="card-magstripe"></div>
+
+                    <div class="px-6 space-y-4 my-auto z-10">
+                      <!-- Signature Panel + UniPay User Number -->
+                      <div class="space-y-1">
+                        <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold flex justify-between">
+                          <span>Authorized Signature</span>
+                          <span>UniPay User No.</span>
+                        </div>
+                        <div class="card-signature-band">
+                          <span class="text-[11px] font-mono font-semibold text-slate-500 italic">Not Valid Unless
+                            Signed</span>
+                          <div
+                            class="bg-white px-2.5 py-0.5 rounded font-mono font-bold text-slate-900 text-xs shadow-inner tracking-wider border border-slate-300"
+                            id="card-cvv-display">
+                            017XXXXXXXX
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Terms & Emergency Info -->
+                      <p class="text-[10px] text-slate-400 leading-relaxed">
+                        This card is the property of United International University (UIU). Issued exclusively for
+                        enclosed on-campus cashless payments at UIU central canteen, library, and campus hotspots. If
+                        lost or found, please return to UIU Security Office or call +880 9604-848848.
+                      </p>
+                    </div>
+
+                    <!-- Flip Back Action -->
+                    <div class="p-4 bg-slate-950/80 border-t border-white/10 flex items-center justify-between z-10">
+                      <div class="flex items-center gap-2">
+                        <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+                        <span class="text-[11px] text-slate-300 font-semibold">256-Bit Bank Grade Encryption</span>
+                      </div>
+                      <button type="button" id="btn-card-flip-back"
+                        class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white border border-white/20 transition flex items-center gap-1">
+                        <span>🔄</span> <span>View Front</span>
+                      </button>
+                    </div>
+
+                    <!-- Dynamic Glare Layer -->
+                    <div id="card-glare-back" class="card-glare"></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: 2x2 Quick Action Features (5 Cols) -->
+          <div class="lg:col-span-5 grid grid-cols-2 gap-3.5 items-stretch">
+            <button id="btn-cashin" class="card-action">
+              <div class="card-icon-wrap">💰</div>
+              <span>Add money</span>
+              <small>bKash · Nagad · Rocket</small>
+            </button>
+
+            <button id="btn-send" class="card-action">
+              <div class="card-icon-wrap">📤</div>
+              <span>Send money</span>
+              <small>Zero fee, instant transfer</small>
+            </button>
+
+            <button id="btn-scan" class="card-action">
+              <div class="card-icon-wrap">📷</div>
+              <span>Scan &amp; pay</span>
+              <small>Campus stall QR codes</small>
+            </button>
+
+            <button id="btn-split"
+              class="card-action border-brand-300/40 bg-gradient-to-br from-white/90 via-orange-50/50 to-orange-100/40">
+              <div
+                class="card-icon-wrap bg-gradient-to-tr from-brand-600 to-amber-500 text-white shadow-md shadow-brand-500/30">
+                🍽️</div>
+              <div class="flex items-center gap-1.5">
+                <span>SplitPay</span>
+                <span
+                  class="px-1.5 py-0.2 rounded-full bg-brand-500 text-white text-[10px] font-extrabold shadow-sm">NEW</span>
+              </div>
+              <small>Split restaurant bills</small>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Docked Loyalty Rewards & Policy Bar -->
+        <div
+          class="rounded-3xl glass-dark-panel text-white p-5 border border-white/15 shadow-xl shadow-slate-900/10 backdrop-blur-xl relative overflow-hidden">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl shrink-0">
+                ⭐
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-extrabold uppercase tracking-wider text-amber-300">Campus Loyalty
+                    Coins</span>
+                  <span class="text-lg font-black text-white font-mono" id="loyalty-points-display">0.00</span>
+                </div>
+                <div id="user-role-note" class="text-[11px] text-slate-400 mt-0.5">
+                  Earn 0.25% cashback on purchases · 1 coin = ৳1.00 · Zero external cashout enclosed economy
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 self-end sm:self-center">
+              <button id="btn-redeem-points" class="btn-primary py-2 px-4 text-xs font-bold shadow-sm" disabled
+                title="Earn 100 coins to unlock redemption">
+                🎁 Redeem Coins
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================== SPLITPAY HUB ====================== -->
+        <div class="glass-panel rounded-3xl p-6 space-y-4">
+          <div
+            class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/60">
+            <div>
+              <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+                <span>🍽️</span> SplitPay — Campus Bill Sharing
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Split restaurant meals with friends evenly or with custom
+                contributions</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-open-split-modal"
+                class="btn-primary py-2 px-3.5 text-xs font-bold shadow-md shadow-brand-500/20">
+                <span>+</span> Split a New Bill
+              </button>
+            </div>
+          </div>
+
+          <!-- SplitPay Section Tabs -->
+          <div class="flex gap-2">
+            <button id="tab-split-requests"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-brand-50 text-brand-700 border border-brand-200 flex items-center gap-1.5">
+              <span>📥</span> Pending Requests for Me
+              <span id="tab-req-count"
+                class="hidden px-1.5 py-0.2 bg-brand-500 text-white rounded-full text-[10px] font-extrabold">0</span>
+            </button>
+            <button id="tab-split-bills"
+              class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center gap-1.5">
+              <span>📋</span> My Created Bills
+            </button>
+          </div>
+
+          <!-- Incoming Requests Container -->
+          <div id="split-incoming-box" class="space-y-3">
+            <div id="split-incoming-list" class="space-y-3">
+              <p class="text-sm text-slate-400 py-6 text-center">No pending split requests for you.</p>
+            </div>
+          </div>
+
+          <!-- My Created Bills Container -->
+          <div id="split-outgoing-box" class="hidden space-y-3">
+            <div id="split-outgoing-list" class="space-y-3">
+              <p class="text-sm text-slate-400 py-6 text-center">You haven't created any split bills yet.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====================== RECENT TRANSACTIONS ====================== -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-extrabold text-base text-slate-900">Recent Transactions</h3>
+            <button id="btn-refresh-history"
+              class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+              <span>↻</span> refresh
+            </button>
+          </div>
+          <div id="user-history" class="divide-y divide-slate-100">
+            <p class="text-sm text-slate-400 py-6 text-center">No transactions yet.</p>
+          </div>
+        </div>
+
+        <!-- ====================== EXPENSE TRACKER ====================== -->
+        <div id="expense-tracker-user" class="glass-panel rounded-3xl p-6 relative overflow-hidden">
+          <!-- Decorative background accent -->
+          <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full opacity-[0.06] pointer-events-none"
+            style="background: radial-gradient(circle, #f26522, #ea580c);"></div>
+
+          <!-- Header Row -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                <span class="text-lg">📊</span>
+                <span>Expense Tracker</span>
+                <span
+                  class="px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-600 text-[10px] font-black uppercase tracking-wide">Campus
+                  Spend</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Track your campus spending over time</p>
+            </div>
+
+            <!-- Period Toggle Pills -->
+            <div id="expense-period-toggle" class="flex gap-1 p-1 bg-slate-100 rounded-2xl text-xs font-bold shrink-0">
+              <button data-period="DAILY"
+                class="expense-period-btn px-3.5 py-1.5 rounded-xl transition text-slate-500 hover:text-slate-700">Today</button>
+              <button data-period="WEEKLY"
+                class="expense-period-btn px-3.5 py-1.5 rounded-xl transition active-period">Week</button>
+              <button data-period="MONTHLY"
+                class="expense-period-btn px-3.5 py-1.5 rounded-xl transition text-slate-500 hover:text-slate-700">Month</button>
+            </div>
+          </div>
+
+          <!-- Summary Stats Row -->
+          <div class="grid grid-cols-3 gap-3 mb-5">
+            <div
+              class="rounded-2xl bg-gradient-to-br from-brand-500/10 to-brand-600/5 border border-brand-500/20 p-3 text-center">
+              <div class="text-[10px] uppercase tracking-wider font-bold text-brand-500 mb-1">Total Spent</div>
+              <div id="expense-total" class="text-base font-black text-slate-900 font-mono">৳0.00</div>
+            </div>
+            <div
+              class="rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-500/20 p-3 text-center">
+              <div class="text-[10px] uppercase tracking-wider font-bold text-emerald-600 mb-1">Daily Avg</div>
+              <div id="expense-avg" class="text-base font-black text-slate-900 font-mono">৳0.00</div>
+            </div>
+            <div
+              class="rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 p-3 text-center">
+              <div class="text-[10px] uppercase tracking-wider font-bold text-blue-600 mb-1">Peak Day</div>
+              <div id="expense-peak" class="text-base font-black text-slate-900 font-mono">৳0.00</div>
+            </div>
+          </div>
+
+          <!-- Custom Bar Chart Canvas -->
+          <div class="relative">
+            <div id="expense-chart-user" class="expense-chart-wrap">
+              <div class="expense-chart-loading text-sm text-slate-400 flex items-center justify-center gap-2 py-10">
+                <svg class="animate-spin w-4 h-4 text-brand-500" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="50"
+                    stroke-dashoffset="15" />
+                </svg>
+                Loading chart…
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== VENDOR DASHBOARD ====================== -->
+      <section id="dash-vendor" class="hidden space-y-6">
+
+        <!-- ====================== HERO SECTION: VENDOR 3D CARD (LEFT) & 2x2 ACTIONS (RIGHT) ====================== -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+          <!-- Left: Slick 3D UniPay Vendor Merchant Pass (7 Cols) -->
+          <div class="lg:col-span-7 flex flex-col justify-center">
+            <div class="card-3d-scene">
+              <div id="vendor-card-3d-stage" class="card-3d-stage group">
+                <div id="vendor-card-3d-flipper" class="card-3d-flipper">
+
+                  <!-- FRONT OF VENDOR CARD -->
+                  <div class="card-face vendor-card-front">
+                    <!-- Top Row: UniPay Logo & Name + NFC + Flip Button -->
+                    <div class="flex items-center justify-between z-10">
+                      <div class="flex items-center gap-2.5">
+                        <div
+                          class="w-9 h-9 rounded-xl bg-white/15 border border-white/25 p-1 flex items-center justify-center shadow-inner shrink-0 backdrop-blur-md">
+                          <img src="/favicon.svg" alt="UniPay Logo" class="w-full h-full object-contain drop-shadow" />
+                        </div>
+                        <div>
+                          <div
+                            class="text-[11px] font-extrabold tracking-wider uppercase text-white/95 leading-tight flex items-center gap-1.5">
+                            <span>UniPay</span>
+                            <span
+                              class="text-[8px] px-1.5 py-0.2 rounded-full bg-emerald-500/80 text-white font-mono font-bold tracking-normal">MERCHANT</span>
+                          </div>
+                          <div class="text-[9px] font-bold tracking-widest text-emerald-300 uppercase">Campus Merchant
+                            Pass · POS Terminal</div>
+                        </div>
+                      </div>
+
+                      <div class="flex items-center gap-2">
+                        <!-- Contactless symbol -->
+                        <div class="contactless-waves text-emerald-300/80 text-sm" title="Contactless NFC POS">
+                          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round">
+                            <path d="M8.5 16.5a5 5 0 0 1 0-7" />
+                            <path d="M11.5 19.5a9 9 0 0 1 0-13" />
+                            <path d="M14.5 22.5a13 13 0 0 1 0-19" />
+                          </svg>
+                        </div>
+                        <!-- Flip Button -->
+                        <button type="button" id="btn-vendor-card-flip"
+                          class="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-bold text-slate-200 border border-white/15 transition flex items-center gap-1 backdrop-blur-md"
+                          title="Flip to see card back">
+                          <span>🔄</span> <span>Flip</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Middle Row: EMV Chip + Vendor Security Hologram Seal + Role Badge -->
+                    <div class="flex items-center justify-between my-auto py-1 z-10">
+                      <div class="flex items-center gap-3">
+                        <div class="emv-chip" title="EMV Contact Chip"></div>
+                        <!-- Authentic Vendor Security Hologram Seal -->
+                        <div class="card-hologram-seal vendor-hologram-seal"
+                          title="Authentic UniPay Merchant Security Hologram">
+                          <img src="/favicon.svg" alt="UniPay Hologram" class="card-hologram-img" />
+                          <div class="card-hologram-shimmer"></div>
+                        </div>
+                      </div>
+                      <div id="vendor-role-badge"
+                        class="px-3 py-1 rounded-full vendor-role-badge text-[11px] font-bold backdrop-blur-md shadow-sm">
+                        🏪 Official Campus Vendor
+                      </div>
+                    </div>
+
+                    <!-- Available Balance & Card Number -->
+                    <div class="space-y-2 z-10">
+                      <div class="flex items-center justify-between">
+                        <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-300">Wallet Balance
+                          (Earnings)</span>
+                        <button type="button" id="btn-vendor-toggle-balance-vis"
+                          class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1"
+                          title="Toggle balance privacy">
+                          <span id="vendor-balance-eye-icon">👁️</span>
+                          <span id="vendor-balance-eye-text" class="text-[10px]">Hide</span>
+                        </button>
+                      </div>
+                      <div id="vendor-balance"
+                        class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-mono drop-shadow-md">
+                        ৳0.00
+                      </div>
+
+                      <!-- Vendor ID / Merchant Terminal Code -->
+                      <div class="flex items-center justify-between pt-1 border-t border-white/10">
+                        <div>
+                          <div class="text-[8px] uppercase tracking-widest text-slate-300 font-bold">Merchant Terminal
+                            ID</div>
+                          <span id="vendor-card-number-display"
+                            class="card-pan-text text-base sm:text-lg font-mono tracking-widest">V-CAFE-01</span>
+                        </div>
+                        <button type="button" id="btn-vendor-toggle-pan-mask"
+                          class="text-slate-300 hover:text-white text-xs p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition backdrop-blur-sm"
+                          title="Reveal / mask Terminal ID">
+                          <span>👁️</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Bottom Row: Stallholder + Operator + UniPay Visa Badge -->
+                    <div class="flex items-end justify-between pt-2 z-10">
+                      <div>
+                        <div class="text-[9px] uppercase tracking-wider text-slate-300 font-bold">Stall / Merchant</div>
+                        <div id="vendor-card-holder-name"
+                          class="font-bold text-xs sm:text-sm uppercase tracking-wider text-white font-mono truncate max-w-[90px] sm:max-w-[160px]">
+                          UIU CANTEEN
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="text-[9px] uppercase tracking-wider text-slate-300 font-bold">Operator</div>
+                        <div id="vendor-card-operator-name"
+                          class="font-mono text-xs font-bold text-emerald-300 tracking-wider truncate max-w-[70px] sm:max-w-[110px]">
+                          AUTHORIZED
+                        </div>
+                      </div>
+
+                      <!-- UniPay Brand in Iconic Visa Card Logo Style (Merchant Edition) -->
+                      <div class="unipay-visa-badge flex flex-col items-end shrink-0 pl-1 sm:pl-2"
+                        title="UniPay Merchant Card · Visa Style">
+                        <div class="flex items-center">
+                          <svg class="h-5 sm:h-7 w-auto drop-shadow-md overflow-visible" viewBox="0 0 130 36"
+                            fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                              <linearGradient id="visa-gold-wing-vendor" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FDE68A" />
+                                <stop offset="50%" stop-color="#F59E0B" />
+                                <stop offset="100%" stop-color="#D97706" />
+                              </linearGradient>
+                            </defs>
+                            <polygon points="12,5 2,17 15,17" fill="url(#visa-gold-wing-vendor)" />
+                            <text x="14" y="28" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif"
+                              font-weight="900" font-style="italic" font-size="30" letter-spacing="-1.2"
+                              fill="#FFFFFF">Uni<tspan fill="#6EE7B7">Pay</tspan></text>
+                          </svg>
+                        </div>
+                        <div
+                          class="text-[7.5px] uppercase font-black tracking-[0.25em] text-emerald-300 italic -mt-0.5 drop-shadow-sm font-sans">
+                          MERCHANT PASS
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Dynamic Glare Layer -->
+                    <div id="vendor-card-glare-front" class="card-glare"></div>
+                  </div>
+
+                  <!-- BACK OF VENDOR CARD -->
+                  <div class="card-face vendor-card-back">
+                    <!-- Magnetic Stripe -->
+                    <div class="card-magstripe" style="background:#02140e;"></div>
+
+                    <div class="px-6 space-y-3 my-auto z-10">
+                      <!-- Signature Panel + UniPay Vendor Phone -->
+                      <div class="space-y-1">
+                        <div class="text-[9px] uppercase tracking-wider text-slate-300 font-bold flex justify-between">
+                          <span>Authorized Merchant Representative</span>
+                          <span>Merchant Phone / CVV</span>
+                        </div>
+                        <div class="card-signature-band">
+                          <span class="text-[11px] font-mono font-semibold text-slate-500 italic">Merchant
+                            Verified</span>
+                          <div
+                            class="bg-white px-2.5 py-0.5 rounded font-mono font-bold text-slate-900 text-xs shadow-inner tracking-wider border border-slate-300"
+                            id="vendor-card-cvv-display">
+                            018XXXXXXXX
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Merchant Identifiers Grid -->
+                      <div
+                        class="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-black/35 border border-white/10 text-[10px]">
+                        <div>
+                          <span class="text-slate-400 block uppercase font-bold text-[8px]">QR Payload Identifier</span>
+                          <span id="vendor-card-qr-payload"
+                            class="font-mono font-bold text-emerald-400 truncate block">UNIPAY:VENDOR:V-CAFE-01</span>
+                        </div>
+                        <div>
+                          <span class="text-slate-400 block uppercase font-bold text-[8px]">POS Processing Node</span>
+                          <span class="font-mono font-bold text-white block">UIU-POS-GATEWAY-1</span>
+                        </div>
+                      </div>
+
+                      <!-- Terms & Regulation Info -->
+                      <p class="text-[9.5px] text-slate-300/80 leading-relaxed">
+                        Official UIU Merchant Terminal Pass. Authorized for receiving instant campus customer
+                        micro-payments via QR Code &amp; POS. Regulated by United International University Finance &amp;
+                        Commercial Accounts.
+                      </p>
+                    </div>
+
+                    <!-- Flip Back Action -->
+                    <div class="p-3.5 bg-slate-950/80 border-t border-white/10 flex items-center justify-between z-10">
+                      <div class="flex items-center gap-2">
+                        <div class="w-3.5 h-3.5 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/50"></div>
+                        <span class="text-[11px] text-slate-200 font-semibold">256-Bit Encrypted Campus Settlement
+                          Vault</span>
+                      </div>
+                      <button type="button" id="btn-vendor-card-flip-back"
+                        class="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white border border-white/20 transition flex items-center gap-1">
+                        <span>🔄</span> <span>View Front</span>
+                      </button>
+                    </div>
+
+                    <!-- Dynamic Glare Layer -->
+                    <div id="vendor-card-glare-back" class="card-glare"></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: 2x2 Sleek Glassmorphism Action Grid (5 Cols) -->
+          <div class="lg:col-span-5 grid grid-cols-2 gap-3.5 items-stretch">
+            <button id="btn-vendor-qr-action" class="card-action group">
+              <div class="card-icon-wrap" style="background:rgba(16,185,129,0.15); color:#10b981;">📲</div>
+              <div class="space-y-0.5">
+                <span class="text-sm font-extrabold text-slate-800 group-hover:text-emerald-600 transition block">POS QR
+                  Code</span>
+                <small class="text-xs text-slate-400 block">Instant customer scan</small>
+              </div>
+            </button>
+
+            <button id="btn-vendor-cashout" class="card-action group">
+              <div class="card-icon-wrap" style="background:rgba(16,185,129,0.15); color:#10b981;">💸</div>
+              <div class="space-y-0.5">
+                <span class="text-sm font-extrabold text-slate-800 group-hover:text-emerald-600 transition block">Cash
+                  Out</span>
+                <small class="text-xs text-slate-400 block">bKash · Nagad · Bank</small>
+              </div>
+            </button>
+
+            <button id="btn-vendor-edit-stall-action" class="card-action group">
+              <div class="card-icon-wrap" style="background:rgba(59,130,246,0.15); color:#3b82f6;">🏪</div>
+              <div class="space-y-0.5">
+                <span class="text-sm font-extrabold text-slate-800 group-hover:text-blue-600 transition block">Stall
+                  Profile</span>
+                <small class="text-xs text-slate-400 block">Edit stall &amp; category</small>
+              </div>
+            </button>
+
+            <button id="btn-vendor-sales-report" class="card-action group">
+              <div class="card-icon-wrap" style="background:rgba(245,158,11,0.15); color:#f59e0b;">📊</div>
+              <div class="space-y-0.5">
+                <span class="text-sm font-extrabold text-slate-800 group-hover:text-amber-600 transition block">Sales
+                  Summary</span>
+                <small class="text-xs text-slate-400 block">View daily volume</small>
+              </div>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Docked Vendor Sales & Performance Bar -->
+        <div
+          class="rounded-3xl glass-dark-panel text-white p-5 border border-white/15 shadow-xl shadow-slate-900/10 backdrop-blur-xl relative overflow-hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
+                📈
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Today's Sales Volume</div>
+                <div id="vendor-today" class="text-xl font-extrabold text-emerald-400 font-mono">৳0.00</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xl shrink-0">
+                🧾
+              </div>
+              <div>
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Today's Orders</div>
+                <div id="vendor-count" class="text-base font-bold text-white">0 payments today</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between sm:justify-end gap-3">
+              <div>
+                <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Registered Stall</div>
+                <div id="vendor-stall" class="text-base font-bold text-white">—</div>
+              </div>
+              <button id="btn-stall-edit" class="btn-primary py-2 px-3 text-xs font-bold shadow-sm">
+                ✏️ Edit
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Code Card -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <h3 class="font-extrabold text-base flex-1">Merchant QR Code</h3>
+            <div class="flex gap-1 p-1 bg-slate-100 rounded-xl text-xs font-bold">
+              <button id="qr-mode-static" class="qr-mode px-3 py-1.5 rounded-lg active">Static</button>
+              <button id="qr-mode-dynamic" class="qr-mode px-3 py-1.5 rounded-lg">Dynamic (one-time)</button>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-[220px_1fr] gap-6 items-center">
+            <div class="justify-self-center">
+              <img id="qr-image" alt="Vendor QR code"
+                class="w-56 h-56 rounded-2xl border-4 border-slate-900 bg-white p-2 shadow-md">
+              <div class="text-[11px] text-center text-slate-400 mt-2 font-medium" id="qr-expiry"></div>
+            </div>
+            <div class="space-y-3">
+              <p id="qr-desc" class="text-sm text-slate-500 font-medium"></p>
+              <div id="qr-amount-box" class="hidden">
+                <label class="lbl">Preset amount (optional, ৳)</label>
+                <input id="qr-amount" type="number" min="1" step="0.01" class="inp" placeholder="e.g. 50">
+              </div>
+              <div class="flex gap-2">
+                <button id="btn-qr-regen" class="btn-primary">Generate QR</button>
+                <button id="btn-qr-copy" class="btn-ghost">Copy code</button>
+              </div>
+              <p class="text-[11px] text-slate-400 leading-relaxed">
+                Static QR works forever and is perfect for printing on the counter. Dynamic QRs carry a one-time nonce,
+                expire in 5 minutes and cannot be screenshot-replayed.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cash-Out History Card -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">💸 Cash-Out History</h3>
+              <p class="text-xs text-slate-400 mt-0.5">All withdrawal transactions from your wallet</p>
+            </div>
+            <button id="btn-refresh-cashouts"
+              class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+              <span>↻</span> refresh
+            </button>
+          </div>
+          <div id="vendor-cashout-list" class="divide-y divide-slate-100">
+            <p class="text-sm text-slate-400 py-6 text-center">No cash-outs yet. Tap "Cash Out" above to withdraw
+              earnings.</p>
+          </div>
+        </div>
+
+        <!-- Payments Received -->
+        <div class="glass-panel rounded-3xl p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-extrabold text-base">Payments Received</h3>
+            <button id="btn-refresh-vhistory"
+              class="text-xs text-brand-600 font-bold hover:underline flex items-center gap-1">
+              <span>↻</span> refresh
+            </button>
+          </div>
+          <div id="vendor-history" class="divide-y divide-slate-100">
+            <p class="text-sm text-slate-400 py-6 text-center">No payments yet.</p>
+          </div>
+        </div>
+
+        <!-- ====================== EARNINGS TRACKER (VENDOR) ====================== -->
+        <div id="expense-tracker-vendor" class="glass-panel rounded-3xl p-6 relative overflow-hidden">
+          <!-- Decorative background accent -->
+          <div class="absolute -top-12 -right-12 w-48 h-48 rounded-full opacity-[0.06] pointer-events-none"
+            style="background: radial-gradient(circle, #10b981, #059669);"></div>
+
+          <!-- Header Row -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+                <span class="text-lg">📈</span>
+                <span>Earnings Tracker</span>
+                <span
+                  class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 text-[10px] font-black uppercase tracking-wide">Campus
+                  Revenue</span>
+              </h3>
+              <p class="text-xs text-slate-400 mt-0.5">Monitor your daily campus earnings and revenue trends</p>
+            </div>
+
+            <!-- Period Toggle Pills -->
+            <div id="vendor-expense-period-toggle"
+              class="flex gap-1 p-1 bg-slate-100 rounded-2xl text-xs font-bold shrink-0">
+              <button data-period="DAILY"
+                class="vendor-expense-period-btn px-3.5 py-1.5 rounded-xl transition text-slate-500 hover:text-slate-700">Today</button>
+              <button data-period="WEEKLY"
+                class="vendor-expense-period-btn px-3.5 py-1.5 rounded-xl transition active-period-vendor">Week</button>
+              <button data-period="MONTHLY"
+                class="vendor-expense-period-btn px-3.5 py-1.5 rounded-xl transition text-slate-500 hover:text-slate-700">Month</button>
+            </div>
+          </div>
+
+          <!-- Summary Stats Row -->
+          <div class="grid grid-cols-3 gap-3 mb-5">
+            <div
+              class="rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 border border-emerald-500/20 p-3 text-center">
+              <div class="text-[10px] uppercase tracking-wider font-bold text-emerald-600 mb-1">Total Earned</div>
+              <div id="vendor-expense-total" class="text-base font-black text-slate-900 font-mono">৳0.00</div>
+            </div>
+            <div
+              class="rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-600/5 border border-blue-500/20 p-3 text-center">
+              <div class="text-[10px] uppercase tracking-wider font-bold text-blue-600 mb-1">Daily Avg</div>
+              <div id="vendor-expense-avg" class="text-base font-black text-slate-900 font-mono">৳0.00</div>
+            </div>
+            <div
+              class="rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-600/5 border border-amber-500/20 p-3 text-center">
+              <div class="text-[10px] uppercase tracking-wider font-bold text-amber-600 mb-1">Best Day</div>
+              <div id="vendor-expense-peak" class="text-base font-black text-slate-900 font-mono">৳0.00</div>
+            </div>
+          </div>
+
+          <!-- Custom Bar Chart Canvas -->
+          <div class="relative">
+            <div id="expense-chart-vendor" class="expense-chart-wrap">
+              <div class="expense-chart-loading text-sm text-slate-400 flex items-center justify-center gap-2 py-10">
+                <svg class="animate-spin w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" stroke-dasharray="50"
+                    stroke-dashoffset="15" />
+                </svg>
+                Loading chart…
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============================= MODALS ============================= -->
+  <div id="modal-backdrop" class="hidden fixed inset-0 bg-navy-950/70 backdrop-blur-sm z-40 transition-opacity"></div>
+
+  <!-- SPLITPAY WIZARD MODAL -->
+  <div id="modal-splitpay" class="hidden modal max-w-lg">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+      <div>
+        <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+          <span>🍽️</span> Split Restaurant Bill
+        </h3>
+        <p class="text-xs text-slate-500">Create bill &amp; send money requests to friends</p>
+      </div>
+      <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+    </div>
+
+    <div class="space-y-4">
+      <!-- Quick UIU Canteen Hotspots -->
+      <div>
+        <label class="lbl">Campus Location / Spot</label>
+        <div class="flex flex-wrap gap-1.5 mb-2">
+          <button type="button"
+            class="split-preset-chip text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 transition font-semibold"
+            data-title="UIU Central Canteen">
+            UIU Central Canteen
+          </button>
+          <button type="button"
+            class="split-preset-chip text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 transition font-semibold"
+            data-title="Khan's Kitchen">
+            Khan's Kitchen
+          </button>
+          <button type="button"
+            class="split-preset-chip text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 transition font-semibold"
+            data-title="Olympia Cafe & Bakery">
+            Olympia Cafe
+          </button>
+          <button type="button"
+            class="split-preset-chip text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 transition font-semibold"
+            data-title="Campus Samosa Corner">
+            Samosa Corner
+          </button>
+          <button type="button"
+            class="split-preset-chip text-xs px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-600 transition font-semibold"
+            data-title="UIU Juice Bar">
+            Juice Bar
+          </button>
+        </div>
+        <input id="split-title" class="inp" placeholder="e.g. UIU Central Canteen Lunch">
+      </div>
+
+      <!-- Total Amount -->
+      <div>
+        <label class="lbl">Total Bill Amount (৳)</label>
+        <input id="split-total" type="number" min="1" step="0.01" class="inp font-bold text-lg text-slate-900"
+          placeholder="e.g. 1200">
+      </div>
+
+      <!-- Split Mode Toggle -->
+      <div>
+        <label class="lbl">How would you like to split?</label>
+        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl">
+          <button type="button" id="split-mode-even"
+            class="py-2 rounded-xl text-xs font-bold transition bg-white text-brand-600 shadow-sm">
+            ⚖️ Split Evenly
+          </button>
+          <button type="button" id="split-mode-custom"
+            class="py-2 rounded-xl text-xs font-bold transition text-slate-600 hover:text-slate-900">
+            ✏️ Split by Custom Share
+          </button>
+        </div>
+        <!-- Distribute remaining evenly helper (only visible in CUSTOM mode) -->
+        <button type="button" id="btn-distribute-even"
+          class="hidden mt-2 w-full py-1.5 rounded-xl text-xs font-bold text-brand-700 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition flex items-center justify-center gap-1.5"
+          onclick="window.UniPaySplit.distributeEvenly()">
+          ↔ Distribute Total Evenly Among Everyone
+        </button>
+      </div>
+
+      <!-- Add Friends Section -->
+      <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="lbl mb-0">Add Participants (Friends)</label>
+          <span id="split-participant-count"
+            class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-brand-100 text-brand-700">0 friends added</span>
+        </div>
+
+        <!-- Quick friend chips (self-filtered by JS) -->
+        <div id="quick-friends-row" class="flex flex-wrap gap-1.5 items-center">
+          <span class="text-[11px] text-slate-400 font-medium">Quick add:</span>
+          <button type="button"
+            class="quick-friend-btn text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 hover:border-brand-500 hover:bg-brand-50 font-semibold transition"
+            data-id="0112330378" data-name="Osama">
+            + Osama
+          </button>
+          <button type="button"
+            class="quick-friend-btn text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 hover:border-brand-500 hover:bg-brand-50 font-semibold transition"
+            data-id="0112330586" data-name="Sakib">
+            + Sakib
+          </button>
+          <button type="button"
+            class="quick-friend-btn text-xs px-2 py-0.5 rounded-md bg-white border border-slate-200 hover:border-brand-500 hover:bg-brand-50 font-semibold transition"
+            data-id="0112330140" data-name="Saimon">
+            + Saimon
+          </button>
+        </div>
+
+        <!-- Friend Input Row -->
+        <div class="flex gap-2">
+          <input id="split-friend-input" class="inp flex-1 text-sm py-2"
+            placeholder="Student ID (e.g. 0112330378) or Phone">
+          <button type="button" id="btn-add-friend" class="btn-primary py-2 px-4 text-xs font-bold shrink-0">
+            + Add
+          </button>
+        </div>
+
+        <!-- Participants List -->
+        <div id="split-participants-list" class="space-y-2 max-h-56 overflow-y-auto pt-1">
+          <p class="text-xs text-slate-400 text-center py-3 italic" id="split-empty-hint">No friends added yet. Add at
+            least one friend to split with.</p>
+        </div>
+
+        <!-- Live Calculation Gauge -->
+        <div id="split-calc-gauge"
+          class="hidden p-3 rounded-xl bg-brand-50 border border-brand-100 text-xs font-semibold text-brand-900 space-y-1.5">
+          <div id="split-summary-text" class="flex justify-between">
+            <span class="text-slate-600">Even share per person (incl. you):</span>
+            <span id="split-per-person" class="font-extrabold text-sm text-brand-700">৳0.00</span>
+          </div>
+          <div id="split-custom-gauge" class="hidden space-y-1">
+            <div class="flex justify-between text-[11px]">
+              <span class="text-slate-600">Allocated to friends:</span>
+              <strong id="split-custom-alloc" class="text-slate-900">৳0.00</strong>
+            </div>
+            <div class="flex justify-between text-[11px]">
+              <span class="text-slate-600">Your share (remainder):</span>
+              <strong id="split-custom-creator" class="text-brand-700">৳0.00</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Optional Note -->
+      <div>
+        <label class="lbl">Note / Description <span class="text-slate-400 font-normal">(optional)</span></label>
+        <input id="split-note" class="inp" placeholder="e.g. Lunch after Midterm exam">
+      </div>
+
+      <!-- How SplitPay Works (money flow info) -->
+      <div class="p-3 rounded-2xl bg-amber-50 border border-amber-200 flex items-start gap-2.5">
+        <span class="text-base leading-none mt-0.5">💡</span>
+        <p class="text-[11px] text-amber-900 leading-relaxed">
+          <strong>How it works:</strong> You (the bill creator) pay the vendor directly at the counter via QR Scan.
+          Then create this split — your friends receive a money request.
+          When they <strong>Accept &amp; Pay</strong>, the amount is instantly transferred from their wallet to
+          <strong>your wallet</strong>, reimbursing your share.
+        </p>
+      </div>
+
+      <p id="split-error"
+        class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100"></p>
+
+      <div class="flex gap-2 pt-2">
+        <button type="button" class="btn-ghost flex-1 modal-close">Cancel</button>
+        <button type="button" id="split-confirm-btn" class="btn-primary flex-1 shadow-lg shadow-brand-500/25">Send Split
+          Requests</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================== VENDOR CASHOUT MODAL ====================== -->
+  <div id="modal-cashout" class="hidden modal max-w-lg">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+      <div>
+        <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">
+          <span>💸</span> Cash Out Earnings
+        </h3>
+        <p class="text-xs text-slate-500">Withdraw your wallet earnings to MFS or bank account</p>
+      </div>
+      <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+    </div>
+    <div class="space-y-4">
+      <!-- Balance Info -->
+      <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
+        <div>
+          <div class="text-xs text-emerald-700 font-bold uppercase tracking-wider">Available to withdraw</div>
+          <div id="cashout-available" class="text-2xl font-extrabold text-emerald-800 mt-0.5">৳0.00</div>
+        </div>
+        <div class="text-3xl">💰</div>
+      </div>
+      <!-- Channel Selection -->
+      <div>
+        <label class="lbl">Withdrawal Method</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button"
+            class="cashout-channel-btn py-3 px-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 transition text-left"
+            data-channel="BKASH">
+            <img src="/img/bkash.svg" class="cashout-channel-logo mx-auto mb-1" alt="bKash">
+            <div class="font-bold text-sm text-slate-900 text-center">bKash</div>
+            <div class="text-xs text-slate-500 text-center">Mobile Banking</div>
+          </button>
+          <button type="button"
+            class="cashout-channel-btn py-3 px-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 transition text-left"
+            data-channel="NAGAD">
+            <img src="/img/nagad.svg" class="cashout-channel-logo mx-auto mb-1" alt="Nagad">
+            <div class="font-bold text-sm text-slate-900 text-center">Nagad</div>
+            <div class="text-xs text-slate-500 text-center">Mobile Banking</div>
+          </button>
+          <button type="button"
+            class="cashout-channel-btn py-3 px-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 transition text-left"
+            data-channel="ROCKET">
+            <img src="/img/rocket.svg" class="cashout-channel-logo mx-auto mb-1" alt="Rocket">
+            <div class="font-bold text-sm text-slate-900 text-center">Rocket</div>
+            <div class="text-xs text-slate-500 text-center">Dutch-Bangla Bank</div>
+          </button>
+          <button type="button"
+            class="cashout-channel-btn py-3 px-4 rounded-2xl border-2 border-slate-200 hover:border-emerald-500 transition text-left"
+            data-channel="BANK">
+            <img src="/img/bank.svg" class="cashout-channel-logo mx-auto mb-1" alt="Bank Transfer">
+            <div class="font-bold text-sm text-slate-900 text-center">Bank Transfer</div>
+            <div class="text-xs text-slate-500 text-center">Any bank account</div>
+          </button>
+        </div>
+      </div>
+      <!-- Amount -->
+      <div>
+        <label class="lbl">Amount to Withdraw (৳)</label>
+        <input id="cashout-amount" type="number" min="10" step="0.01" class="inp font-bold text-base"
+          placeholder="Min ৳10.00">
+      </div>
+      <!-- Account Number / Phone -->
+      <div>
+        <label id="cashout-account-label" class="lbl">MFS Wallet Number</label>
+        <input id="cashout-account" class="inp" placeholder="01XXXXXXXXX">
+      </div>
+      <!-- Account Holder Name (optional) -->
+      <div>
+        <label class="lbl">Account Holder Name <span class="text-slate-400 font-normal">(optional)</span></label>
+        <input id="cashout-holder" class="inp" placeholder="Your name">
+      </div>
+      <!-- Bank-specific fields -->
+      <div id="cashout-bank-fields" class="hidden space-y-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+        <div>
+          <label class="lbl">Bank Name</label>
+          <input id="cashout-bank-name" class="inp" placeholder="e.g. Dutch-Bangla Bank Ltd.">
+        </div>
+        <div>
+          <label class="lbl">Branch Name <span class="text-slate-400 font-normal">(optional)</span></label>
+          <input id="cashout-branch" class="inp" placeholder="e.g. Dhaka Main Branch">
+        </div>
+      </div>
+      <p id="cashout-error"
+        class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100"></p>
+      <div class="flex gap-2 pt-2">
+        <button class="btn-ghost flex-1 modal-close">Cancel</button>
+        <button id="cashout-confirm" class="btn-primary flex-1 shadow-lg"
+          style="background:linear-gradient(135deg,#34d399,#059669);">Withdraw Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Money — Two-step OTP Wizard -->
+  <div id="modal-cashin" class="hidden modal">
+    <!-- Step A: Provider / Amount / Phone -->
+    <div id="cashin-step-a">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <div>
+          <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">💰 Add Money</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Step 1 of 2 · bKash redirects to bKash gateway · Nagad/Rocket use OTP
+          </p>
+        </div>
+        <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+      </div>
+      <div id="provider-grid" class="grid grid-cols-3 gap-2 mb-4"></div>
+      <div class="space-y-3">
+        <div>
+          <label class="lbl">Amount (৳)</label>
+          <input id="cashin-amount" type="number" min="20" step="0.01" class="inp font-bold text-base"
+            placeholder="500">
+          <div class="flex items-center gap-1.5 flex-wrap mt-2" id="cashin-preset-chips">
+            <button type="button"
+              class="cashin-preset-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors"
+              data-amt="100">+৳100</button>
+            <button type="button"
+              class="cashin-preset-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors"
+              data-amt="500">+৳500</button>
+            <button type="button"
+              class="cashin-preset-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors"
+              data-amt="1000">+৳1,000</button>
+            <button type="button"
+              class="cashin-preset-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors"
+              data-amt="2000">+৳2,000</button>
+            <button type="button"
+              class="cashin-preset-btn px-2.5 py-1 rounded-lg text-xs font-bold border border-slate-200 hover:border-orange-500 hover:text-orange-500 transition-colors"
+              data-amt="5000">+৳5,000</button>
+          </div>
+        </div>
+        <div>
+          <label class="lbl">Your MFS Wallet Number</label>
+          <input id="cashin-phone" class="inp" placeholder="01XXXXXXXXX">
+        </div>
+        <p id="cashin-error-a"
+          class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100"></p>
+        <div class="flex gap-2 pt-2">
+          <button class="btn-ghost flex-1 modal-close">Cancel</button>
+          <button id="btn-send-otp" class="btn-primary flex-1">Send OTP 📲</button>
+        </div>
+        <p class="text-xs text-slate-400 text-center">A 6-digit OTP will be sent to your MFS number</p>
+      </div>
+    </div>
+
+    <!-- Step B: OTP Entry -->
+    <div id="cashin-step-b" class="hidden">
+      <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+        <div>
+          <h3 class="font-extrabold text-lg text-slate-900 flex items-center gap-2">🔐 Enter OTP</h3>
+          <p class="text-xs text-slate-500 mt-0.5">Step 2 of 2 · Check your MFS number</p>
+        </div>
+        <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Sent-to info banner -->
+      <div class="p-4 rounded-2xl bg-orange-50 border border-orange-100 mb-4">
+        <div class="text-xs text-orange-700 font-bold uppercase tracking-wider mb-1">OTP sent to</div>
+        <div class="flex items-center justify-between">
+          <div>
+            <span id="otp-masked-phone" class="font-extrabold text-slate-900 text-base">01*****000</span>
+            <span class="text-xs text-slate-500 ml-2">via <span id="otp-provider-label"
+                class="font-bold text-orange-700">bKash</span></span>
+          </div>
+          <div class="text-xl font-extrabold text-orange-600" id="otp-amount-label">৳0.00</div>
+        </div>
+      </div>
+
+      <!-- 6-digit OTP inputs -->
+      <div class="otp-digit-grid" id="otp-input-grid">
+        <input type="text" maxlength="1" class="otp-digit" id="otp-d0" autocomplete="one-time-code" inputmode="numeric"
+          pattern="[0-9]">
+        <input type="text" maxlength="1" class="otp-digit" id="otp-d1" inputmode="numeric" pattern="[0-9]">
+        <input type="text" maxlength="1" class="otp-digit" id="otp-d2" inputmode="numeric" pattern="[0-9]">
+        <input type="text" maxlength="1" class="otp-digit" id="otp-d3" inputmode="numeric" pattern="[0-9]">
+        <input type="text" maxlength="1" class="otp-digit" id="otp-d4" inputmode="numeric" pattern="[0-9]">
+        <input type="text" maxlength="1" class="otp-digit" id="otp-d5" inputmode="numeric" pattern="[0-9]">
+      </div>
+
+      <!-- Timer + Resend -->
+      <div class="otp-timer-wrap">
+        <span class="otp-timer-pill" id="otp-timer-pill">⏱ <span id="otp-countdown">03:00</span></span>
+        <button id="btn-resend-otp" class="btn-resend" disabled>Resend OTP</button>
+      </div>
+
+      <p id="cashin-error-b"
+        class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100 mt-3"></p>
+
+      <!-- Demo hint & Quick auto-fill button -->
+      <p class="text-xs text-slate-400 text-center mt-3">Enter the 6-digit OTP sent to your MFS number</p>
+      <div class="mt-2 text-center">
+        <button type="button" id="btn-quick-fill-otp"
+          class="text-xs font-semibold text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 py-1.5 px-3 rounded-xl border border-orange-200 transition-all inline-flex items-center gap-1.5 shadow-sm">
+          <span>⚡</span> Demo Auto-Fill OTP (123456)
+        </button>
+      </div>
+
+      <div class="flex gap-2 pt-4">
+        <button id="btn-otp-back" class="btn-ghost flex-1">← Back</button>
+        <button id="btn-verify-otp" class="btn-primary flex-1">Verify &amp; Add Money ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send money -->
+  <div id="modal-send" class="hidden modal">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+      <h3 class="font-extrabold text-lg text-slate-900">Send Money</h3>
+      <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+    </div>
+    <p class="text-xs text-slate-500 -mt-2 mb-4">Instant P2P to any UIU Student, Faculty or Staff · zero fee</p>
+    <div class="space-y-3">
+      <div>
+        <label class="lbl">Recipient University ID or Phone</label>
+        <input id="send-to" class="inp" placeholder="0112330378">
+      </div>
+      <div>
+        <label class="lbl">Amount (৳)</label>
+        <input id="send-amount" type="number" min="1" step="0.01" class="inp font-bold text-base" placeholder="100">
+      </div>
+      <div class="text-xs text-slate-500">Your balance: <span id="send-balance" class="font-bold text-brand-600"></span>
+      </div>
+      <p id="send-error" class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">
+      </p>
+      <div class="flex gap-2 pt-2">
+        <button class="btn-ghost flex-1 modal-close">Cancel</button>
+        <button id="send-confirm" class="btn-primary flex-1">Send now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scan & pay -->
+  <div id="modal-scan" class="hidden modal max-w-md">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+      <h3 class="font-extrabold text-lg text-slate-900">Scan &amp; Pay</h3>
+      <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+    </div>
+    <p class="text-xs text-slate-500 -mt-2 mb-4">Point the camera at the stall's UniPay QR · zero charge</p>
+    <div id="scan-step1" class="space-y-3">
+      <div id="qr-reader" class="rounded-2xl overflow-hidden border-2 border-slate-200 bg-slate-900 aspect-square">
+      </div>
+      <p id="scan-cam-error" class="hidden text-xs text-amber-600 font-semibold"></p>
+      <div class="text-center text-xs text-slate-400">— or pay without a camera —</div>
+      <div>
+        <label class="lbl">Vendor ID / Pasted Code</label>
+        <input id="scan-manual" class="inp" placeholder="V-CAFE-01">
+      </div>
+      <button id="scan-manual-btn" class="btn-ghost w-full">Continue with manual entry</button>
+    </div>
+    <div id="scan-step2" class="hidden space-y-3">
+      <div class="p-4 bg-brand-50 rounded-2xl text-sm border border-brand-100">
+        Paying <span id="pay-vendor" class="font-bold text-brand-700"></span>
+        <span id="pay-preset" class="hidden text-xs block text-slate-500 mt-0.5"></span>
+      </div>
+      <div>
+        <label class="lbl">Amount (৳)</label>
+        <input id="pay-amount" type="number" min="1" step="0.01" class="inp font-bold text-base">
+      </div>
+      <p id="pay-error" class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">
+      </p>
+      <div class="flex gap-2 pt-2">
+        <button id="pay-back" class="btn-ghost flex-1">Back</button>
+        <button id="pay-confirm" class="btn-primary flex-1">Confirm payment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendor stall profile -->
+  <div id="modal-profile" class="hidden modal">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+      <h3 class="font-extrabold text-lg text-slate-900">Stall Profile</h3>
+      <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+    </div>
+    <p class="text-xs text-slate-500 -mt-2 mb-4">Shown to UIU students &amp; staff when scanning your QR</p>
+    <div class="space-y-3">
+      <div>
+        <label class="lbl">Stall Name</label>
+        <input id="stall-name" class="inp" placeholder="UIU Central Canteen">
+      </div>
+      <div>
+        <label class="lbl">Category</label>
+        <select id="stall-category" class="inp">
+          <option value="CANTEEN">Canteen</option>
+          <option value="BOOKSHOP">Bookshop</option>
+          <option value="FOOD_STALL">Food stall</option>
+          <option value="OTHER">Other</option>
+        </select>
+      </div>
+      <p id="profile-error"
+        class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100"></p>
+      <div class="flex gap-2 pt-2">
+        <button class="btn-ghost flex-1 modal-close">Cancel</button>
+        <button id="profile-save" class="btn-primary flex-1">Save profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal User Profile Edit Modal -->
+  <div id="modal-user-profile" class="hidden modal">
+    <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-500 to-amber-500 text-white flex items-center justify-center text-lg shadow-sm">
+          👤
+        </div>
+        <div>
+          <h3 class="font-extrabold text-lg text-slate-900">Edit Profile</h3>
+          <p class="text-xs text-slate-500">Update your personal UniPay account details</p>
+        </div>
+      </div>
+      <button class="modal-close text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+    </div>
+
+    <div class="space-y-3.5">
+      <!-- Non-editable info banner -->
+      <div class="grid grid-cols-2 gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+        <div>
+          <label class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider block mb-0.5">User ID</label>
+          <div id="prof-user-id" class="font-mono font-bold text-slate-800 text-sm"></div>
+        </div>
+        <div>
+          <label class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider block mb-0.5">Campus
+            Role</label>
+          <div id="prof-role-badge" class="font-bold text-brand-600 text-sm"></div>
+        </div>
+      </div>
+
+      <!-- Profile Picture Section -->
+      <div
+        class="p-3.5 bg-gradient-to-r from-orange-50/70 via-amber-50/50 to-slate-50 rounded-2xl border border-orange-100/80 space-y-3">
+        <div class="flex items-center justify-between">
+          <label class="lbl !mb-0">Profile Picture</label>
+          <span class="text-[11px] text-slate-500 font-medium">All Campus Roles</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <!-- Avatar Ring & Preview -->
+          <div class="prof-avatar-ring relative shrink-0">
+            <div id="prof-avatar-box"
+              class="w-16 h-16 rounded-[24px] overflow-hidden bg-slate-900 flex items-center justify-center border-2 border-white text-2xl shadow-sm">
+              <img id="prof-avatar-img" class="w-full h-full object-cover hidden" alt="Avatar">
+              <span id="prof-avatar-emoji">👤</span>
+            </div>
+            <button type="button" id="btn-trigger-upload"
+              class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-brand-500 hover:bg-brand-600 text-white flex items-center justify-center text-xs shadow-md border border-white transition-transform hover:scale-110"
+              title="Upload Custom Photo">
+              📷
+            </button>
+          </div>
+
+          <!-- Controls & Presets -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <button type="button" id="btn-upload-photo"
+                class="px-3 py-1.5 rounded-xl bg-white hover:bg-orange-50 border border-slate-200 hover:border-brand-400 text-xs font-bold text-slate-700 transition flex items-center gap-1.5 shadow-sm">
+                <span>📤</span> <span>Upload Photo</span>
+              </button>
+              <button type="button" id="btn-remove-photo"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-red-500 hover:bg-red-50 transition">
+                Remove
+              </button>
+            </div>
+            <input type="file" id="prof-avatar-input" accept="image/*" class="hidden">
+
+            <!-- Preset Avatars -->
+            <div class="mt-2.5">
+              <div class="text-[10px] uppercase font-extrabold text-slate-400 tracking-wider mb-1">Quick Avatar Presets
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap" id="preset-avatar-container">
+                <button type="button" class="preset-avatar-chip" data-avatar="👨‍🎓" title="Student Male">👨‍🎓</button>
+                <button type="button" class="preset-avatar-chip" data-avatar="👩‍🎓"
+                  title="Student Female">👩‍🎓</button>
+                <button type="button" class="preset-avatar-chip" data-avatar="👨‍🏫" title="Faculty">👨‍🏫</button>
+                <button type="button" class="preset-avatar-chip" data-avatar="👩‍🏫" title="Professor">👩‍🏫</button>
+                <button type="button" class="preset-avatar-chip" data-avatar="🧑‍💻"
+                  title="Tech & Coding">🧑‍💻</button>
+                <button type="button" class="preset-avatar-chip" data-avatar="🦊" title="Campus Fox">🦊</button>
+                <button type="button" class="preset-avatar-chip" data-avatar="⚡" title="Fintech">⚡</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Name -->
+      <div>
+        <label class="lbl">Full Name</label>
+        <input id="prof-fullname" class="inp font-bold" placeholder="Your full name" maxlength="100">
+      </div>
+
+      <!-- Phone Number -->
+      <div>
+        <label class="lbl">Phone Number (11-digit BD Mobile)</label>
+        <input id="prof-phone" class="inp font-mono font-bold" placeholder="017XXXXXXXX" maxlength="15">
+        <p class="text-[11px] text-slate-400 mt-1">Used for P2P transfers and MFS verification</p>
+      </div>
+
+      <!-- Vendor fields (conditionally visible) -->
+      <div id="prof-vendor-section" class="hidden space-y-3 p-3.5 rounded-2xl bg-amber-50/70 border border-amber-100">
+        <div class="text-xs font-bold text-amber-900 uppercase tracking-wider">🏪 Stall Configuration</div>
+        <div>
+          <label class="lbl">Stall Name</label>
+          <input id="prof-stall-name" class="inp font-bold" placeholder="e.g. UIU Central Canteen">
+        </div>
+        <div>
+          <label class="lbl">Stall Category</label>
+          <select id="prof-stall-cat" class="inp font-bold">
+            <option value="CANTEEN">Canteen</option>
+            <option value="BOOKSHOP">Bookshop</option>
+            <option value="FOOD_STALL">Food stall</option>
+            <option value="OTHER">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Change Password (Optional) -->
+      <div class="pt-2 border-t border-slate-100">
+        <label class="lbl">New Password <span class="text-slate-400 font-normal">(leave blank to keep
+            current)</span></label>
+        <input id="prof-new-pass" type="password" class="inp" placeholder="••••••••" autocomplete="new-password">
+      </div>
+
+      <p id="prof-error" class="hidden text-sm font-medium text-red-600 bg-red-50 p-3 rounded-xl border border-red-100">
+      </p>
+
+      <div class="flex gap-2 pt-2">
+        <button class="btn-ghost flex-1 modal-close">Cancel</button>
+        <button id="btn-save-user-profile" class="btn-primary flex-1">Save Profile ✓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Center Modal / Drawer -->
+  <div id="modal-notifications" class="hidden modal max-w-lg">
+    <div class="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-500 to-amber-500 text-white flex items-center justify-center text-base shadow-sm">
+          🔔
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h3 class="font-extrabold text-base text-slate-900">Notifications</h3>
+            <span id="notif-modal-unread"
+              class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-brand-500/15 text-brand-600 border border-brand-500/30">0
+              New</span>
+          </div>
+          <p class="text-xs text-slate-500">Live payment alerts &amp; campus activity</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <!-- Integrated Sound / Alert On/Off Toggle -->
+        <button type="button" id="btn-toggle-notif-sound"
+          class="px-2.5 py-1 rounded-xl text-xs font-bold transition flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700"
+          title="Toggle notification sound alerts on/off">
+          <span id="notif-sound-icon">🔊</span>
+          <span id="notif-sound-text">Alerts: ON</span>
+        </button>
+
+        <button id="btn-notif-mark-read"
+          class="text-xs font-bold text-brand-600 hover:text-brand-700 hover:underline px-2 py-1 transition"
+          title="Mark all as read">
+          Mark read
+        </button>
+        <button class="modal-close text-slate-400 hover:text-slate-600 text-lg font-bold p-1">✕</button>
+      </div>
+    </div>
+
+    <!-- Notification volume control -->
+    <div class="flex items-center gap-3 px-3 py-2.5 mb-3 rounded-2xl bg-slate-50 border border-slate-200">
+      <span class="text-xs font-bold text-slate-600 shrink-0">🔊 Volume</span>
+      <input id="notif-volume-slider" type="range" min="0" max="100" step="5" value="100"
+        class="flex-1 h-1.5 rounded-full bg-slate-300 accent-brand-500 cursor-pointer appearance-none"
+        title="Notification sound volume">
+      <span id="notif-volume-label" class="text-[11px] font-extrabold text-slate-700 w-9 text-right shrink-0">100%</span>
+      <button type="button" id="btn-test-notif-sound"
+        class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-brand-500 hover:bg-brand-600 text-white transition shrink-0"
+        title="Play a test notification sound">Test</button>
+    </div>
+
+    <!-- Notification list container -->
+    <div id="notif-list-container" class="space-y-2.5 max-h-[55vh] overflow-y-auto pr-1">
+      <!-- Notifications will be dynamically rendered here -->
+    </div>
+
+    <!-- Empty state -->
+    <div id="notif-empty-state" class="hidden py-10 text-center space-y-2">
+      <div class="text-4xl">📭</div>
+      <div class="text-sm font-bold text-slate-700">No notifications yet</div>
+      <p class="text-xs text-slate-400 max-w-xs mx-auto">Your payments, bill splits, and money transfers will appear
+        here with timestamps.</p>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toasts" class="fixed top-4 right-4 z-50 space-y-2 w-80"></div>
+
+  <!--
+    ?v= is a cache-busting stamp. Bump the number whenever css/js change so the
+    browser can never serve a stale copy (a very common reason a fix looks
+    "not applied"). Combined with the no-store headers in application.yml.
+  -->
+  <script src="/js/api.js?v=8"></script>
+  <script src="/js/sound.js?v=8"></script>
+  <script src="/js/ws.js?v=8"></script>
+  <script src="/js/app.js?v=8"></script>
+</body>
+
+</html>

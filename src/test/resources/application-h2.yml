@@ -1,0 +1,11 @@
+# Test profile for isolated in-memory execution during automated tests
+spring:
+  datasource:
+    url: jdbc:h2:mem:unipay-test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;NON_KEYWORDS=TIMESTAMP;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/schema-h2.sql

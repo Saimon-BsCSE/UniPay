@@ -1,0 +1,62 @@
+# ---- Build output ----------------------------------------------------------
+target/
+out/
+bin/
+build/
+*.class
+*.jar
+*.war
+*.ear
+!.mvn/wrapper/maven-wrapper.jar
+
+# ---- IDEs ------------------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.settings/
+.classpath
+.project
+nbproject/
+*.swp
+*~
+
+# ---- OS --------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Logs & runtime --------------------------------------------------------
+logs/
+*.log
+*.pid
+
+# ---- Local databases (seeded on first boot; never commit) ------------------
+data/
+*.db
+*.mv.db
+*.trace.db
+*.lock.db
+
+# ---- Secrets / local overrides --------------------------------------------
+# Real credentials belong in the environment (see README §7), never in the repo.
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.yaml
+application-local.properties
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+*.jks
+
+# ---- OS / editor temp ------------------------------------------------------
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
