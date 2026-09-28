@@ -931,12 +931,12 @@ body.dark-theme .history-toggle[aria-expanded='true']:hover {
 
 .txn-ico.in {
   background: #ECFDF5;
-  color: #059669;
+  color: #047857;
 }
 
 .txn-ico.out {
-  background: #FFF7ED;
-  color: #EA580C;
+  background: #FEF2F2;
+  color: #B91C1C;
 }
 
 .txn-meta {
@@ -965,48 +965,15 @@ body.dark-theme .history-toggle[aria-expanded='true']:hover {
 }
 
 .txn-amt.in {
-  color: #059669;
+  color: #047857;
 }
 
 .txn-amt.out {
-  color: #1e293b;
+  color: #B91C1C;
 }
 
-body.dark-theme .txn-row:not(#view-auth *) {
-  border-color: rgba(255, 255, 255, 0.06) !important;
-}
-
-body.dark-theme .txn-row:hover:not(#view-auth *) {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-body.dark-theme .txn-name:not(#view-auth *) {
-  color: #f8fafc !important;
-}
-
-body.dark-theme .txn-sub:not(#view-auth *) {
-  color: #94a3b8 !important;
-}
-
-body.dark-theme .txn-amt.out:not(#view-auth *) {
-  color: #f1f5f9 !important;
-}
-
-body.dark-theme .txn-amt.in:not(#view-auth *) {
-  color: #34d399 !important;
-}
-
-body.dark-theme .txn-ico.in:not(#view-auth *) {
-  background: rgba(16, 185, 129, 0.16) !important;
-  color: #34d399 !important;
-  border: 1px solid rgba(16, 185, 129, 0.3) !important;
-}
-
-body.dark-theme .txn-ico.out:not(#view-auth *) {
-  background: rgba(242, 101, 34, 0.16) !important;
-  color: #fb923c !important;
-  border: 1px solid rgba(242, 101, 34, 0.3) !important;
-}
+/* Dark-mode overrides for these rows live in the single
+   "Dark Theme Text Contrast & Invisibility Overrides" block further down. */
 
 /* SplitPay progress bar */
 .split-progress-bg {
@@ -2357,21 +2324,21 @@ body:not(.dark-theme) .txn-sub:not(#view-auth *) {
 }
 
 body:not(.dark-theme) .txn-amt.in:not(#view-auth *) {
-  color: #059669 !important;
+  color: #047857 !important;
 }
 
 body:not(.dark-theme) .txn-amt.out:not(#view-auth *) {
-  color: #1e293b !important;
+  color: #B91C1C !important;
 }
 
 body:not(.dark-theme) .txn-ico.in:not(#view-auth *) {
   background: #ECFDF5 !important;
-  color: #059669 !important;
+  color: #047857 !important;
 }
 
 body:not(.dark-theme) .txn-ico.out:not(#view-auth *) {
-  background: #FFF7ED !important;
-  color: #EA580C !important;
+  background: #FEF2F2 !important;
+  color: #B91C1C !important;
 }
 
 body:not(.dark-theme) .split-progress-bg:not(#view-auth *) {
@@ -2628,12 +2595,6 @@ body:not(.dark-theme) #modal-notifications .notif-item.unread {
   border-color: rgba(253, 186, 116, 0.7) !important;
 }
 
-/* Light mode for vendor cashout items */
-body:not(.dark-theme) .txn-ico.out[style*="#d1fae5"]:not(#view-auth *) {
-  background: #d1fae5 !important;
-  color: #059669 !important;
-}
-
 /* The 3D card face is dark in BOTH modes — keep light text on it */
 body:not(.dark-theme) .card-face .text-slate-400,
 body:not(.dark-theme) .card-face .text-slate-300,
@@ -2825,7 +2786,7 @@ body.dark-theme .txn-sub:not(#view-auth *) {
 }
 
 body.dark-theme .txn-amt.out:not(#view-auth *) {
-  color: #f1f5f9 !important;
+  color: #F26D6D !important;
 }
 
 body.dark-theme .txn-amt.in:not(#view-auth *) {
@@ -2839,9 +2800,9 @@ body.dark-theme .txn-ico.in:not(#view-auth *) {
 }
 
 body.dark-theme .txn-ico.out:not(#view-auth *) {
-  background: rgba(242, 101, 34, 0.16) !important;
-  color: #fb923c !important;
-  border: 1px solid rgba(242, 101, 34, 0.3) !important;
+  background: rgba(239, 68, 68, 0.16) !important;
+  color: #f26d6d !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
 }
 
 /* 3D Smart Cards Text Visibility (Both User & Vendor Cards) */

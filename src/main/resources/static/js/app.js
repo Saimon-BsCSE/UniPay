@@ -1337,12 +1337,18 @@
       : (c.status === 'PENDING'
         ? '<span class="badge-pill badge-pending">⏳ Processing</span>'
         : '<span class="badge-pill badge-declined">❌ Failed</span>');
+    // The API field is `createdAt`; `requestedAt` never existed on the DTO, so this
+    // line used to render a blank timestamp followed by a stray leading " · ".
+    const ts = fullTimestamp(c.createdAt);
+    const ago = timeAgo(c.createdAt);
+    const sub = ago + (ts ? ` · ${ts}` : '') +
+      ' · To: ' + (c.destination || c.accountNumber || '—');
     return `
       <div class="txn-row">
-        <div class="txn-ico out" style="background:#d1fae5;color:#059669;">${icon}</div>
+        <div class="txn-ico out">${icon}</div>
         <div class="txn-meta">
           <div class="txn-name flex items-center gap-2">${esc(c.channel)} Cash-Out ${statusBadge}</div>
-          <div class="txn-sub">${fullTimestamp(c.requestedAt)} · To: ${esc(c.destination || c.accountNumber || '—')}</div>
+          <div class="txn-sub">${esc(sub)}</div>
         </div>
         <div class="txn-amt out">−${taka(c.amount)}</div>
       </div>`;

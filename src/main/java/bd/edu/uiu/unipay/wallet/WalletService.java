@@ -62,7 +62,11 @@ public class WalletService {
     }
 
     static WalletDtos.TransactionDto toDto(Transaction txn, String viewerId) {
-        boolean outgoing = txn.getSender().getUserId().equals(viewerId);
+        // A cash-in top-up is booked self-to-self (sender == receiver == user). Testing only
+        // "is the viewer the sender?" therefore classified every top-up as OUT and rendered it
+        // as a negative amount, so a self-credit counts as money arriving instead.
+        boolean selfCredit = txn.getSender().getUserId().equals(txn.getReceiver().getUserId());
+        boolean outgoing = !selfCredit && txn.getSender().getUserId().equals(viewerId);
         User counterparty = outgoing ? txn.getReceiver() : txn.getSender();
         return new WalletDtos.TransactionDto(
                 txn.getTransactionId(),
