@@ -4,6 +4,7 @@ import bd.edu.uiu.unipay.common.ApiException;
 import bd.edu.uiu.unipay.loyalty.LoyaltyService;
 import bd.edu.uiu.unipay.transaction.Transaction;
 import bd.edu.uiu.unipay.transaction.TransactionRepository;
+import bd.edu.uiu.unipay.transaction.TransactionType;
 import bd.edu.uiu.unipay.user.Role;
 import bd.edu.uiu.unipay.user.User;
 import bd.edu.uiu.unipay.user.UserRepository;
@@ -62,11 +63,19 @@ public class WalletService {
     }
 
     static WalletDtos.TransactionDto toDto(Transaction txn, String viewerId) {
-        // A cash-in top-up is booked self-to-self (sender == receiver == user). Testing only
-        // "is the viewer the sender?" therefore classified every top-up as OUT and rendered it
-        // as a negative amount, so a self-credit counts as money arriving instead.
-        boolean selfCredit = txn.getSender().getUserId().equals(txn.getReceiver().getUserId());
-        boolean outgoing = !selfCredit && txn.getSender().getUserId().equals(viewerId);
+        // Direction has to follow the effect on the viewer's wallet, not merely who the
+        // sender is. Three types are booked self-to-self (sender == receiver), so the
+        // sender test cannot classify them on its own: cash-in top-ups and loyalty
+        // redemptions credit the wallet, while a vendor cash-out debits it. Every
+        // other type is a real transfer between two different users.
+        TransactionType type = txn.getTransactionType();
+        boolean selfRow = txn.getSender().getUserId().equals(txn.getReceiver().getUserId());
+        boolean outgoing = switch (type) {
+            case MFS_CASH_IN, LOYALTY_REDEMPTION -> false;
+            case VENDOR_CASHOUT -> true;
+            case VENDOR_PAYMENT, P2P_TRANSFER, SPLIT_PAY ->
+                !selfRow && txn.getSender().getUserId().equals(viewerId);
+        };
         User counterparty = outgoing ? txn.getReceiver() : txn.getSender();
         return new WalletDtos.TransactionDto(
                 txn.getTransactionId(),

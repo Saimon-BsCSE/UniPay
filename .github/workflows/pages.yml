@@ -1,0 +1,70 @@
+# Publishes the UniPay frontend to GitHub Pages as a self-contained demo.
+#
+# GitHub Pages can only serve static files, so this deploys the same
+# src/main/resources/static assets the Spring Boot app serves — but with
+# js/config.js switched to demo mode. That routes every /api/* call to
+# js/demo-api.js, an in-memory stand-in seeded with the same demo campus the
+# Java DataSeeder creates. Nothing about the real jar changes.
+#
+# The API paths, CORS rules and business logic all still live in the Java app;
+# this site is a UI demo. Run the jar locally to exercise real payments.
+
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two deploys race; let the newest finish.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+        with:
+          # Auto-enable Pages for this repo on the first run (no-ops once on).
+          # If the repo blocks automation, enable it once in
+          # Settings -> Pages -> Source -> GitHub Actions.
+          enablement: true
+
+      - name: Stage static site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -r src/main/resources/static/. _site/
+
+          # Pages must serve the raw files: without this, Jekyll drops anything
+          # under a path starting with an underscore.
+          touch _site/.nojekyll
+
+          # Switch the deployed build to the offline demo backend.
+          cat > _site/js/config.js <<'EOF'
+          /* Overwritten by the Pages workflow: this build runs the offline demo. */
+          window.UNIPAY_CONFIG = { demo: true, apiBase: '' };
+          EOF
+
+          echo "staged files:"
+          find _site -type f | sort
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

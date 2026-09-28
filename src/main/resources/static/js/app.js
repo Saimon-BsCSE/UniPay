@@ -8,6 +8,8 @@
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const taka = (n) => '৳' + Number(n || 0).toLocaleString('en-US',
     { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const dayStamp = (d) =>
+    d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeAgo = (iso) => {
     if (!iso) return '';
     const d = new Date(iso);
@@ -15,12 +17,18 @@
     if (s < 60) return 'just now';
     if (s < 3600) return Math.floor(s / 60) + ' min ago';
     if (s < 86400) return Math.floor(s / 3600) + ' h ago';
-    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    // Beyond a day this used to return the date, which duplicated the date already
+    // present in fullTimestamp() wherever the two were printed together. Callers
+    // that only use timeAgo() pass it through the absolute fallback below.
+    return '';
   };
+
+  /** timeAgo() for places that print a relative time with no absolute fallback. */
+  const timeAgoOrDate = (iso) => timeAgo(iso) || (iso ? dayStamp(new Date(iso)) : '');
   const fullTimestamp = (iso) => {
     if (!iso) return '';
     const d = new Date(iso);
-    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) +
+    return dayStamp(d) +
       ' ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
   };
 
@@ -469,7 +477,7 @@
     let name = t.counterpartyName || '';
     const ts = fullTimestamp(t.timestamp);
     const ago = timeAgo(t.timestamp);
-    let sub = ago + (ts ? ` · ${ts}` : '') + ' · ' + txnLabel(t.type);
+    let sub = (ago ? ago + ' · ' : '') + (ts || '') + ' · ' + txnLabel(t.type);
     if (t.type === 'MFS_CASH_IN') { icon = '🏦'; name = 'MFS Cash-In'; }
     if (t.type === 'VENDOR_PAYMENT') icon = incoming ? '🏪' : '🛍️';
     if (t.type === 'P2P_TRANSFER') icon = incoming ? '📥' : '📤';
@@ -718,7 +726,7 @@
                 <span>🍽️</span> ${esc(req.billTitle)}
               </div>
               <div class="text-xs text-slate-500 mt-0.5">
-                Requested by <strong>${esc(req.creatorName)}</strong> (${esc(req.creatorId)}) · ${timeAgo(req.createdAt)}
+                Requested by <strong>${esc(req.creatorName)}</strong> (${esc(req.creatorId)}) · ${timeAgoOrDate(req.createdAt)}
               </div>
               ${req.note ? `<div class="text-xs text-slate-600 bg-slate-50 px-2 py-1 rounded-lg mt-1 inline-block">"${esc(req.note)}"</div>` : ''}
             </div>
@@ -742,7 +750,7 @@
                 </button>
               </div>
             ` : (isAccepted ? `
-              <div class="text-[11px] text-slate-400 font-medium">Paid ${timeAgo(req.paidAt)}</div>
+              <div class="text-[11px] text-slate-400 font-medium">Paid ${timeAgoOrDate(req.paidAt)}</div>
             ` : '')}
           </div>
         </div>
@@ -779,7 +787,7 @@
                 <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold uppercase">${esc(bill.splitType)}</span>
               </div>
               <div class="text-xs text-slate-500 mt-0.5">
-                Created ${timeAgo(bill.createdAt)} · Total: <strong>${taka(bill.totalAmount)}</strong>
+                Created ${timeAgoOrDate(bill.createdAt)} · Total: <strong>${taka(bill.totalAmount)}</strong>
               </div>
             </div>
             ${statusBadge}
@@ -1288,7 +1296,7 @@
   function showPosBanner(event) {
     $('pos-title').textContent = event.title || 'Payment received';
     $('pos-detail').textContent = (event.senderName || 'A customer') + ' · ' +
-      timeAgo(event.timestamp) + ' · ' + (event.transactionId || '');
+      timeAgoOrDate(event.timestamp) + ' · ' + (event.transactionId || '');
     $('pos-amount').textContent = taka(event.amount);
     const banner = $('pos-banner');
     banner.classList.remove('hidden', 'banner-out');
@@ -1341,7 +1349,7 @@
     // line used to render a blank timestamp followed by a stray leading " · ".
     const ts = fullTimestamp(c.createdAt);
     const ago = timeAgo(c.createdAt);
-    const sub = ago + (ts ? ` · ${ts}` : '') +
+    const sub = (ago ? ago + ' · ' : '') + (ts || '') +
       ' · To: ' + (c.destination || c.accountNumber || '—');
     return `
       <div class="txn-row">
@@ -1498,11 +1506,11 @@
         let logoHtml = '';
         const code = p.code?.toUpperCase();
         if (code === 'BKASH') {
-          logoHtml = '<img src="/img/bkash.svg" class="mfs-provider-logo" alt="bKash">';
+          logoHtml = '<img src="img/bkash.svg" class="mfs-provider-logo" alt="bKash">';
         } else if (code === 'NAGAD') {
-          logoHtml = '<img src="/img/nagad.svg" class="mfs-provider-logo" alt="Nagad">';
+          logoHtml = '<img src="img/nagad.svg" class="mfs-provider-logo" alt="Nagad">';
         } else if (code === 'ROCKET') {
-          logoHtml = '<img src="/img/rocket.svg" class="mfs-provider-logo" alt="Rocket">';
+          logoHtml = '<img src="img/rocket.svg" class="mfs-provider-logo" alt="Rocket">';
         } else {
           logoHtml = '<div class="text-xl">' + (p.icon || '🏦') + '</div>';
         }
@@ -2577,7 +2585,7 @@
       const icon = getNotifIcon(n.type);
       const isUnread = !n.isRead;
       const formattedTime = formatNotifTimestamp(n.createdAt);
-      const ago = n.timeAgo || timeAgo(n.createdAt);
+      const ago = n.timeAgo || timeAgoOrDate(n.createdAt);
       const amountBadge = (n.amount && Number(n.amount) > 0)
         ? `<span class="px-2 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 shrink-0">৳${Number(n.amount).toFixed(2)}</span>`
         : '';

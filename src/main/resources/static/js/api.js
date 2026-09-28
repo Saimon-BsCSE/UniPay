@@ -1,6 +1,12 @@
 /* UniPay API client — thin fetch wrapper with JWT header + consistent error handling. */
 (function () {
+  const CFG = window.UNIPAY_CONFIG || { demo: false, apiBase: '' };
+  const DEMO = !!CFG.demo;
+  // Absolute when hosted under a subpath (GitHub Pages) or split from the API.
+  const BASE = (CFG.apiBase || '').replace(/\/$/, '');
+
   const API = {
+    demo: DEMO,
     token: localStorage.getItem('unipay_token') || null,
     user: JSON.parse(localStorage.getItem('unipay_user') || 'null'),
 
@@ -19,6 +25,9 @@
     },
 
     async call(path, { method = 'GET', body, params } = {}) {
+      // The static demo site has no server, so it answers from memory instead.
+      if (DEMO && window.DemoAPI) return window.DemoAPI.call(path, { method, body, params });
+
       const headers = { 'Content-Type': 'application/json' };
       if (this.token) headers['Authorization'] = 'Bearer ' + this.token;
 
@@ -31,7 +40,7 @@
         url = path + (path.includes('?') ? '&' : '?') + qs;
       }
 
-      const res = await fetch(url, {
+      const res = await fetch(BASE + url, {
         method, headers,
         // body:null means no body; body:undefined also means no body; only send when defined & non-null
         body: (body !== undefined && body !== null) ? JSON.stringify(body) : undefined
@@ -56,7 +65,8 @@
     },
 
     async blob(path) {
-      const res = await fetch(path, { headers: { 'Authorization': 'Bearer ' + this.token } });
+      if (DEMO && window.DemoAPI) return window.DemoAPI.blob(path);
+      const res = await fetch(BASE + path, { headers: { 'Authorization': 'Bearer ' + this.token } });
       if (!res.ok) throw new Error('Failed to load ' + path);
       return res.blob();
     },

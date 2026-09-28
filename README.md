@@ -68,7 +68,7 @@ override via `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DB`, `MYSQL_USER`, `MYSQL_PASSWO
 ### 2.3 Build & test
 
 ```bash
-./mvnw clean verify        # 46 tests: unit (Mockito) + integration + concurrency proof
+./mvnw clean verify        # 55 tests: unit (Mockito) + integration + concurrency proof
 ./mvnw clean package       # → target/unipay-1.0.0.jar
 ```
 
@@ -77,6 +77,29 @@ override via `MYSQL_HOST`, `MYSQL_PORT`, `MYSQL_DB`, `MYSQL_USER`, `MYSQL_PASSWO
 | http://localhost:8080 | SPA (login, wallet, QR POS, dashboards) |
 | http://localhost:8080/swagger-ui.html | Interactive OpenAPI documentation |
 | http://localhost:8080/h2-console | H2 console (H2 profile only, JDBC URL `jdbc:h2:mem:unipay`) |
+
+### 2.4 Static demo site (GitHub Pages)
+
+Every push to `main` publishes a browsable, zero-setup demo to
+**<https://saimon-bscse.github.io/UniPay/>** via [`.github/workflows/pages.yml`](.github/workflows/pages.yml).
+
+GitHub Pages only serves static files, so the deployed site runs on
+[`js/demo-api.js`](src/main/resources/static/js/demo-api.js) — an in-memory stand-in that
+reproduces the `DataSeeder` campus (30 days of history for all 8 accounts, SplitPay bills, cash-outs)
+and returns the same response shapes as the real controllers. **This is a UI demo only:** payments,
+OTP, bKash checkout and the QR image are simulated, and nothing persists past a page reload.
+Run the jar (§2.1) to exercise the real backend.
+
+To see the demo locally before pushing, mount the static folder under a subpath the same way
+Pages does:
+
+```bash
+java tools/DemoServer.java              # → http://localhost:8099/UniPay/
+```
+
+To point a static build at a **real** backend instead, set `demo: false` and `apiBase` in
+[`js/config.js`](src/main/resources/static/js/config.js). The server's CORS bean allows any origin,
+so no further server changes are needed. The jar always ships `demo: false` and talks to its own API.
 
 ## 3. Mandatory course requirements — how each is met
 
@@ -110,6 +133,7 @@ unipay/
 ├── db/schema-h2.sql                # mirror for the zero-setup demo profile
 ├── docs/ARCHITECTURE.md            # diagrams: components, ER, sequences, threading model
 ├── docs/API.md                     # full endpoint reference
+├── tools/DemoServer.java           # local preview of the GitHub Pages build (JDK, no deps)
 └── src
     ├── main/java/bd/edu/uiu/unipay
     │   ├── auth/                   # registration & login (JWT)
@@ -125,6 +149,7 @@ unipay/
     ├── main/resources
     │   ├── application*.yml        # shared + h2 + mysql profiles
     │   └── static/                 # Tailwind SPA (index.html, js/, css/)
+    │       └── js/demo-api.js      # offline in-memory backend for the Pages demo only
     └── test/java/...               # unit + integration + concurrency tests
 ```
 

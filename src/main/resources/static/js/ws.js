@@ -18,6 +18,13 @@
       this.manuallyClosed = false;
       this.onEvent = onEvent;
       this.onStateChange = onStateChange;
+      // The static demo site has no server to hold a socket open, so skip the
+      // SockJS handshake (and its retry/backoff loop) and just poll.
+      if (window.UNIPAY_CONFIG && window.UNIPAY_CONFIG.demo) {
+        this.connected = false;
+        this.startPolling();
+        return;
+      }
       this.connect();
     },
 
