@@ -1719,6 +1719,11 @@
    * Leading honorifics/titles are skipped so "Md" and "Dr." are never
    * treated as the name, and any parenthesised suffix such as
    * "(Verified)" is discarded before splitting.
+   *
+   * VENDOR EXCEPTION: a vendor account's full name is the stall/business
+   * name, not a person's name, so taking the first token would sign
+   * "UIU Central Canteen" as just "UIU". Merchant passes are therefore
+   * signed with the complete stall name.
    */
   const SIGNATURE_SKIP_TOKENS = new Set([
     'md', 'mst', 'dr', 'prof', 'mr', 'mrs', 'ms', 'miss', 'mx',
@@ -1726,6 +1731,7 @@
     'mohammed', 'muhammad', 'abdul', 'sheikh', 'sk'
   ]);
 
+  /** Personal accounts: the main (first) name only, honorifics skipped. */
   function signatureName(fullName) {
     if (!fullName) return '';
     // Drop parenthesised suffixes, e.g. "(Verified)".
@@ -1741,13 +1747,34 @@
     return '';
   }
 
-  /** Writes the auto-derived signature onto a card back. Safe to call repeatedly. */
-  function renderCardSignature(elementId, fullName) {
+  /** Vendor accounts: the whole stall name, so the merchant is identifiable. */
+  function stallSignatureName(fullName) {
+    if (!fullName) return '';
+    return String(fullName)
+      .replace(/[([{][^)\]}]*[)\]}]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /**
+   * Writes the auto-derived signature onto a card back. Safe to call repeatedly.
+   * @param {string} elementId  target span id
+   * @param {string} fullName   name as returned by the backend
+   * @param {{vendor?: boolean}} [opts] pass {vendor:true} to sign the full stall name
+   */
+  function renderCardSignature(elementId, fullName, opts) {
     const el = $(elementId);
     if (!el) return;
-    const name = signatureName(fullName);
+    const isVendor = !!(opts && opts.vendor);
+    const name = isVendor ? stallSignatureName(fullName) : signatureName(fullName);
     el.textContent = name || '—';
     el.title = name ? ('Signed electronically as ' + name) : 'Signature unavailable';
+    // Long stall names need a smaller hand, more of the strip, and room to
+    // wrap on narrow phones, so toggle the modifier on the strip as well.
+    const long = isVendor && name.length > 8;
+    el.classList.toggle('card-signature-name--long', long);
+    const band = el.closest('.card-signature-band');
+    if (band) band.classList.toggle('card-signature-band--long', long);
   }
 
   function update3DCardBack(phone) {
@@ -1848,7 +1875,7 @@
     if (!cvvEl) return;
     const num = (phone || (API.user && API.user.phoneNumber) || '017XXXXXXXX').trim();
     cvvEl.textContent = num;
-    renderCardSignature('vendor-card-signature-name', API.user && API.user.fullName);
+    renderCardSignature('vendor-card-signature-name', API.user && API.user.fullName, { vendor: true });
   }
 
   /* ==================== TWO-STEP OTP CASH-IN FLOW ======================== */

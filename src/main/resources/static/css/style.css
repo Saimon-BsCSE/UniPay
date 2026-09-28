@@ -2015,6 +2015,38 @@ details.faq-item[open] summary .faq-chevron {
   user-select: none;
 }
 
+/* Vendor passes sign the whole stall name, e.g. "UIU Central Canteen".
+   A single first name is short, but a stall name is not, so this variant
+   uses a smaller hand and gives up less room to the phone chip. */
+.card-signature-name--long {
+  font-size: 15px;
+  max-width: 72%;
+  transform: rotate(-1.5deg);
+}
+
+@media (max-width: 480px) {
+  .card-signature-name--long {
+    font-size: 13px;
+    max-width: 64%;
+  }
+}
+
+/* The strip is narrowest on the smallest phones, where a full stall name such
+   as "Campus Samosa Corner" no longer fits beside the phone chip. Let the
+   long variant wrap onto a second line and let the strip grow to suit, so the
+   merchant is always identifiable rather than truncated to "Campus Samosa..." */
+.card-signature-band--long {
+  height: auto;
+  min-height: 42px;
+  padding: 4px 12px;
+}
+
+.card-signature-name--long {
+  white-space: normal;
+  overflow: visible;
+  line-height: 1.05;
+}
+
 /* --------------------------------------------------------------------------
    Card back phone chip
    --------------------------------------------------------------------------
