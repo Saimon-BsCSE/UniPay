@@ -12,8 +12,10 @@
   'use strict';
 
   var DEMO_PASSWORD = 'demo1234';
-  var LOYALTY_THRESHOLD = 10;
-  var REDEEM_MIN_POINTS = 100;
+  // One threshold, as on the server: LoyaltyService.MIN_REDEMPTION_POINTS = 10.
+  // The demo previously reported a threshold of 10 but refused to redeem below
+  // 100, so the Redeem button was dead for every demo account.
+  var REDEEM_MIN_POINTS = 10;
 
   /* ------------------------------------------------------------------ users */
   // fullName values mirror the live database, including the "(Verified)"
@@ -30,7 +32,23 @@
   ];
 
   var byId = {};
-  USERS.forEach(function (u) { byId[u.userId] = u; });
+  var byPhone = {};
+  USERS.forEach(function (u) {
+    byId[u.userId] = u;
+    if (u.phoneNumber) byPhone[u.phoneNumber] = u;
+    // Registered accounts created during the session are added to byId only;
+    // mirror that in byPhone so they stay reachable by phone too.
+  });
+
+  /**
+   * Resolves a recipient the way PaymentService does: university ID first, then
+   * phone number. Keep this in step with PaymentService#resolveRecipient.
+   */
+  function resolveMember(key) {
+    var k = String(key == null ? '' : key).trim();
+    if (!k) return null;
+    return byId[k] || byPhone[k] || null;
+  }
 
   /* ------------------------------------------------------- session + state */
   var session = null;          // { token, userId }
@@ -116,10 +134,25 @@
       if (day % 7 === 5) add(day, 19, 30, sakib,  rezaul, 60, P2P);
     }
 
-    // A couple of split-pay bills so the SplitPay tab is not empty.
-    mkBill({
-      title: "Khan's Kitchen", totalAmount: 570, splitType: 'EVEN', note: 'Lunch bill buddy',
-      creator: saimon, createdAt: daysAgoAt(3, 13, 5), statuses: ['ACCEPTED', 'PENDING', 'DECLINED']
+    // Split-pay bills so the SplitPay tab is not empty for any account. Every
+    // non-vendor creates at least one, and each also receives requests through
+    // the participant pool above.
+    [
+      { creator: saimon, title: "Khan's Kitchen", total: 570, day: 3,
+        statuses: ['ACCEPTED', 'PENDING', 'DECLINED', 'PENDING'], note: 'Lunch bill buddy' },
+      { creator: osama, title: 'Study Group Dinner', total: 480, day: 6,
+        statuses: ['ACCEPTED', 'ACCEPTED'], note: 'Rollout dinner' },
+      { creator: sakib, title: 'Cafeteria Run', total: 260, day: 9,
+        statuses: ['PENDING'], note: 'Snacks before the lab' },
+      { creator: nafees, title: 'Project Printout', total: 900, day: 12,
+        statuses: ['ACCEPTED', 'PENDING'], note: 'Final year project copies' },
+      { creator: rezaul, title: 'Team Lunch', total: 720, day: 15,
+        statuses: ['DECLINED', 'PENDING'], note: 'Office team lunch' }
+    ].forEach(function (b) {
+      mkBill({
+        title: b.title, totalAmount: b.total, splitType: 'EVEN', note: b.note,
+        creator: b.creator, createdAt: daysAgoAt(b.day, 13, 5), statuses: b.statuses
+      });
     });
 
     // A few settled cash-outs for the vendors. Each vendor gets well over the 4-row
@@ -154,10 +187,17 @@
   }
 
   function mkBill(spec) {
-    var per = Number((spec.totalAmount / 3).toFixed(2));
+    // Never make the creator one of their own participants, and split evenly
+    // across creator + participants the way SplitType.EVEN does. The pool is
+    // every non-vendor, so each account both creates a bill and is asked to pay
+    // one - otherwise the Requests tab is empty for whoever is signed in.
+    var pool = ['0112330140', '0112330378', 'UIU-STF-101', '0112330586', '0111910667']
+      .filter(function (id) { return id !== spec.creator && byId[id]; });
+    var chosen = spec.statuses.map(function (_, i) { return pool[i % pool.length]; });
+    var per = Number((spec.totalAmount / (chosen.length + 1)).toFixed(2));
     var billId = 'SPLIT-' + Math.random().toString(16).slice(2, 10);
     var parts = spec.statuses.map(function (st, i) {
-      var pid = ['0112330378', '0112330586', '0111910667'][i % 3];
+      var pid = chosen[i];
       var accepted = st === 'ACCEPTED';
       return {
         requestId: 'REQ-' + Math.random().toString(16).slice(2, 10),
@@ -180,6 +220,97 @@
       remainingAmount: Number((spec.totalAmount - collected - per).toFixed(2)),
       createdAt: iso(spec.createdAt), participants: parts
     });
+  }
+
+  /**
+   * Creates a bill from what the user actually asked for, mirroring
+   * SplitPayService#createBill. mkBill() is only for seeded history: it invents
+   * three fixed participants at total/3, which is fine for demo data but wrong
+   * for a bill a person just made.
+   *
+   * Kept in step with SplitPayService#createBill and #mapBillToResponse.
+   */
+  function createBill(creator, b) {
+    var title = String(b.title == null ? '' : b.title).trim();
+    if (!title) throw bad('Give the bill a title.');
+    var total = Number(b.totalAmount);
+    if (!(total >= 1)) throw bad('Total bill amount must be at least ?1.00.');
+
+    var splitType = b.splitType === 'CUSTOM' ? 'CUSTOM' : 'EVEN';
+    var items = Array.isArray(b.participants) ? b.participants : [];
+    var resolved = [];
+    var seen = {};
+    for (var i = 0; i < items.length; i++) {
+      var key = items[i] && items[i].userIdentifier;
+      if (String(key == null ? '' : key).trim() === '') continue;
+      var member = resolveMember(key);
+      if (!member) {
+        var nf = new Error('No registered UniPay user found for ID or phone: ' + String(key).trim());
+        nf.status = 404; throw nf;
+      }
+      if (member.userId === creator.userId) throw bad('You cannot add yourself as a split participant.');
+      if (seen[member.userId]) {
+        throw bad('Duplicate participant in split: ' + member.fullName + ' (' + member.userId + ')');
+      }
+      seen[member.userId] = true;
+      resolved.push({ user: member, amount: items[i].amount });
+    }
+    if (!resolved.length) throw bad('At least one valid participant is required.');
+
+    // The creator's own share is whatever the participants do not cover.
+    var participantTotal = 0;
+    var parts = [];
+    var billId = 'SPLIT-' + Math.random().toString(16).slice(2, 14);
+    var createdAt = new Date();
+
+    if (splitType === 'EVEN') {
+      // Creator is one of the people sharing, hence n + 1.
+      var even = round2(total / (resolved.length + 1));
+      participantTotal = round2(even * resolved.length);
+      for (var e = 0; e < resolved.length; e++) {
+        parts.push(newPart(billId, resolved[e].user, even, createdAt));
+      }
+    } else {
+      for (var c = 0; c < resolved.length; c++) {
+        var amt = Number(resolved[c].amount);
+        if (!(amt >= 0.5)) {
+          throw bad('Custom contribution for ' + resolved[c].user.fullName + ' must be at least ?0.50.');
+        }
+        participantTotal = round2(participantTotal + amt);
+        parts.push(newPart(billId, resolved[c].user, round2(amt), createdAt));
+      }
+      if (round2(participantTotal) > round2(total)) {
+        throw bad('Total participant contributions (?' + round2(participantTotal).toFixed(2) +
+          ') exceed the bill amount (?' + round2(total).toFixed(2) + ').');
+      }
+    }
+
+    var creatorShare = Math.max(0, round2(total - participantTotal));
+    var remaining = Math.max(0, round2(total - creatorShare));
+    var bill = {
+      billId: billId, title: title, totalAmount: round2(total),
+      splitType: splitType, status: 'ACTIVE',
+      note: b.note == null ? '' : String(b.note).trim(),
+      creatorId: creator.userId, creatorName: creator.fullName,
+      creatorShare: creatorShare, collectedAmount: 0, remainingAmount: remaining,
+      createdAt: iso(createdAt), participants: parts
+    };
+    bills.push(bill);
+    rebuildNotifications();
+    return bill;
+  }
+
+  function newPart(billId, user, amount, at) {
+    return {
+      requestId: 'REQ-' + Math.random().toString(16).slice(2, 14),
+      participantId: user.userId, participantName: user.fullName,
+      amount: round2(amount), status: 'PENDING',
+      transactionId: null, paidAt: null, createdAt: iso(at)
+    };
+  }
+
+  function round2(n) {
+    return Math.round((Number(n) + Number.EPSILON) * 100) / 100;
   }
 
   function mkCashout(vendorId, amount, at) {
@@ -381,6 +512,7 @@
         avatarUrl: null, opening: 0, stallName: null, stallCategory: null
       };
       byId[id] = u;
+      if (u.phoneNumber) byPhone[u.phoneNumber] = u;
       wallets[id] = { balance: 0, loyalty: 25, updatedAt: iso(now) };
       ledger[id] = []; cashouts[id] = []; notifications[id] = [];
       session = { token: 'demo-' + id + '-' + Date.now(), userId: id };
@@ -401,7 +533,13 @@
     'PUT /api/user/profile': function (b) {
       var u = requireSession();
       if (b.fullName) u.fullName = b.fullName;
-      if (b.phoneNumber) u.phoneNumber = b.phoneNumber;
+      if (b.phoneNumber) {
+        // Re-key the phone index so the new number stays payable and the old
+        // one stops resolving.
+        if (byPhone[u.phoneNumber] === u) delete byPhone[u.phoneNumber];
+        u.phoneNumber = b.phoneNumber;
+        byPhone[u.phoneNumber] = u;
+      }
       if (b.avatarUrl !== undefined) u.avatarUrl = b.avatarUrl;
       if (b.stallName) u.stallName = b.stallName;
       if (b.stallCategory) u.stallCategory = b.stallCategory;
@@ -447,7 +585,7 @@
       var w = wallets[requireSession().userId];
       return {
         points: Number(w.loyalty.toFixed(4)),
-        threshold: LOYALTY_THRESHOLD,
+        threshold: REDEEM_MIN_POINTS,
         eligible: w.loyalty >= REDEEM_MIN_POINTS
       };
     },
@@ -456,7 +594,8 @@
       var u = requireSession();
       var w = wallets[u.userId];
       if (w.loyalty < REDEEM_MIN_POINTS) {
-        var e = new Error('You need at least ' + REDEEM_MIN_POINTS + ' coins to redeem.');
+        var e = new Error('Insufficient loyalty points. You need at least ' + REDEEM_MIN_POINTS +
+          ' coins to redeem (1 coin = ?1). Your balance: ' + Number(w.loyalty.toFixed(2)) + ' pts.');
         e.status = 402; throw e;
       }
       var pts = w.loyalty, cash = Number(pts.toFixed(2));
@@ -580,8 +719,12 @@
     'POST /api/payments/p2p': function (b) {
       var u = requireSession();
       var amount = Number(b.amount);
-      var target = byId[String(b.receiverId || b.recipientId || '')];
+      // The field is `recipient` and may be a university ID or a phone number,
+      // exactly as the real endpoint accepts.
+      var target = resolveMember(b.recipient);
       if (!target) throw bad('Choose a valid UniPay member to pay.');
+      if (target.userId === u.userId) throw bad('You cannot send money to yourself.');
+      if (!(amount > 0)) throw bad('Enter an amount greater than zero.');
       if (amount > wallets[u.userId].balance) throw bad('Amount is more than your available balance.');
       pushTxn({
         id: 'TXN-P2P-' + Math.random().toString(16).slice(2, 20),
@@ -664,16 +807,11 @@
     /* ------------------------------------------------------------ splitpay */
     'GET /api/splitpay/my-bills': function () {
       var uid = requireSession().userId;
-      var mine = bills.filter(function (x) { return x.creatorId === uid; });
-      if (mine.length) return mine[0];
-      // Show bills created by others that this user was asked to pay.
-      var joined = [];
-      bills.forEach(function (x) {
-        if (x.creatorId === uid) return;
-        var minePart = x.participants.filter(function (p) { return p.participantId === uid; })[0];
-        if (minePart) joined.push(x);
-      });
-      return joined.length ? joined[0] : null;
+      // A list, matching the server. Returning a single object here made the
+      // Bills tab look permanently empty: renderSplitBills() checks .length and
+      // then maps, and a plain object has no length, so it fell through to the
+      // empty state every time without raising an error.
+      return bills.filter(function (x) { return x.creatorId === uid; });
     },
 
     'GET /api/splitpay/my-requests': function () {
@@ -706,15 +844,17 @@
 
     'POST /api/splitpay/bills': function (b) {
       var u = requireSession();
-      var total = Number(b.totalAmount || 0);
-      if (!(total > 0)) throw bad('Enter the total bill amount.');
-      mkBill({
-        title: b.title || 'Shared bill', totalAmount: total,
-        splitType: b.splitType || 'EVEN', note: b.note || '',
-        creator: u.userId, createdAt: new Date(), statuses: ['PENDING', 'PENDING', 'PENDING']
-      });
-      var created = bills[bills.length - 1];
-      return { billId: created.billId, message: 'Split bill created and shared.', totalAmount: total };
+      var created = createBill(byId[u.userId], b);
+      return {
+        billId: created.billId, title: created.title,
+        totalAmount: created.totalAmount, splitType: created.splitType,
+        status: created.status, note: created.note,
+        creatorId: created.creatorId, creatorName: created.creatorName,
+        creatorShare: created.creatorShare, collectedAmount: created.collectedAmount,
+        remainingAmount: created.remainingAmount, createdAt: created.createdAt,
+        participants: created.participants,
+        message: 'Split bill created and shared.'
+      };
     }
   };
 
@@ -735,32 +875,74 @@
     var e = new Error('That request no longer exists.'); e.status = 404; throw e;
   }
 
+  function conflict(msg) {
+    var e = new Error(msg); e.status = 409; return e;
+  }
+
+  /**
+   * Mirrors SplitPayService#acceptRequest / #declineRequest, including the
+   * guards. Without the status check a request could be accepted repeatedly,
+   * which debited the participant and credited the creator more than once.
+   */
   function settleRequest(requestId, status) {
     var u = requireSession();
     var hit = findPart(requestId);
-    if (hit.part.participantId !== u.userId) { var e = new Error('Not your request.'); e.status = 403; throw e; }
+    if (hit.part.participantId !== u.userId) {
+      var f = new Error(status === 'ACCEPTED'
+        ? 'You are not authorized to accept this split request.'
+        : 'You are not authorized to decline this split request.');
+      f.status = 403; throw f;
+    }
+    if (hit.part.status !== 'PENDING') {
+      throw conflict('This request is already ' + hit.part.status + '.');
+    }
+    if (status === 'ACCEPTED' && hit.bill.status !== 'ACTIVE') {
+      throw conflict('This bill is no longer active (status: ' + hit.bill.status + ').');
+    }
+
     hit.part.status = status;
     if (status === 'ACCEPTED') {
+      var share = round2(hit.part.amount);
+      var bal = wallets[u.userId].balance;
+      if (bal < share) {
+        throw conflict('Insufficient balance to pay split share. Required: ?' +
+          share.toFixed(2) + ', Available: ?' + round2(bal).toFixed(2) + '.');
+      }
       hit.part.paidAt = iso(new Date());
       hit.part.transactionId = 'TXN-SPLIT-' + Math.random().toString(16).slice(2, 12);
       pushTxn({
         id: hit.part.transactionId, from: u.userId, to: hit.bill.creatorId,
-        amount: hit.part.amount, type: 'SPLIT_PAY', at: new Date()
+        amount: share, type: 'SPLIT_PAY', at: new Date()
       });
-      hit.bill.collectedAmount = Number((hit.bill.collectedAmount + hit.part.amount).toFixed(2));
-      hit.bill.remainingAmount = Number((hit.bill.remainingAmount - hit.part.amount).toFixed(2));
+      hit.bill.collectedAmount = round2(hit.bill.collectedAmount + share);
+      hit.bill.remainingAmount = Math.max(0, round2(hit.bill.remainingAmount - share));
       rebuildNotifications();
-      return { message: 'Split Paid', amount: hit.part.amount, newBalance: Number(wallets[u.userId].balance.toFixed(2)) };
+      return {
+        requestId: requestId, transactionId: hit.part.transactionId, amount: share,
+        payerNewBalance: round2(wallets[u.userId].balance), message: 'Split Paid'
+      };
     }
-    return { message: 'Request declined.' };
+    rebuildNotifications();
+    return { requestId: requestId, message: 'Request declined.' };
   }
 
+  /** Mirrors SplitPayService#cancelBill: creator-only, ACTIVE-only, and it
+   *  cancels the outstanding requests too. */
   function cancelBill(billId) {
     var u = requireSession();
     var bill = bills.filter(function (x) { return x.billId === billId; })[0];
-    if (!bill) { var e = new Error('Bill not found.'); e.status = 404; throw e; }
-    if (bill.creatorId !== u.userId) { var e2 = new Error('Only the creator can cancel.'); e2.status = 403; throw e2; }
+    if (!bill) { var e = new Error('Split bill not found: ' + billId); e.status = 404; throw e; }
+    if (bill.creatorId !== u.userId) {
+      var e2 = new Error('You can only cancel bills created by you.'); e2.status = 403; throw e2;
+    }
+    if (bill.status !== 'ACTIVE') {
+      throw conflict('Cannot cancel bill with status ' + bill.status);
+    }
     bill.status = 'CANCELLED';
+    bill.participants.forEach(function (p) {
+      if (p.status === 'PENDING') p.status = 'CANCELLED';
+    });
+    rebuildNotifications();
     return { message: 'Bill cancelled.', billId: billId };
   }
 
