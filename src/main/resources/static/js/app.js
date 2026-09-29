@@ -2496,35 +2496,6 @@
       };
     }
 
-    /* Notification volume slider — persisted via localStorage in sound.js */
-    const volSlider = $('notif-volume-slider');
-    const volLabel = $('notif-volume-label');
-    if (volSlider) {
-      const stored = Math.round(Sound.getVolume() * 100);
-      volSlider.value = stored;
-      if (volLabel) volLabel.textContent = stored + '%';
-      volSlider.oninput = () => {
-        const pct = Number(volSlider.value);
-        Sound.setVolume(pct / 100);
-        if (volLabel) volLabel.textContent = pct + '%';
-      };
-      volSlider.onchange = () => {
-        if (Sound.enabled) Sound.cash();
-      };
-    }
-
-    const testSoundBtn = $('btn-test-notif-sound');
-    if (testSoundBtn) {
-      testSoundBtn.onclick = () => {
-        if (!Sound.enabled) {
-          toast('🔇 Alerts are muted', 'Turn on "Alerts: ON" to hear test sounds.', true);
-          return;
-        }
-        Sound.vendorPayment();
-        setTimeout(() => Sound.cash(), 700);
-      };
-    }
-
     const markReadBtn = $('btn-notif-mark-read');
     if (markReadBtn) {
       markReadBtn.onclick = async () => {
