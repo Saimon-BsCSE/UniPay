@@ -275,13 +275,35 @@
     authView.classList.add('view-enter');
   }
 
-  function logout() {
+  /**
+   * Actually ends the session. Split out from confirmLogout so the destructive
+   * step is reachable from exactly one place.
+   */
+  function performLogout() {
+    closeModals();
     lastUserBalance = null;
     lastVendorBalance = null;
     lastLoyaltyPoints = null;
     WS.stop();
     API.clearSession();
     showAuth();
+  }
+
+  /**
+   * Asks before signing out. The logout button sits in the shared topbar, so
+   * this one guard covers every role. Naming the account in the prompt means a
+   * shared device cannot be logged out by accident.
+   */
+  function confirmLogout() {
+    const label = $('logout-user-label');
+    if (label) {
+      const name = (API.user && (API.user.fullName || API.user.vendorName)) || '';
+      const id = (API.user && API.user.userId) || '';
+      label.textContent = name || id || 'This account';
+    }
+    openModal('modal-logout');
+    const cancel = $('btn-logout-cancel');
+    if (cancel) cancel.focus();
   }
 
   function onWsState(connected) {
@@ -2671,7 +2693,9 @@
     $('form-register').onsubmit = doRegister;
     $('reg-role').onchange = () =>
       $('reg-vendor-fields').classList.toggle('hidden', $('reg-role').value !== 'VENDOR');
-    $('btn-logout').onclick = logout;
+    $('btn-logout').onclick = confirmLogout;
+    $('btn-logout-cancel').onclick = closeModals;
+    $('btn-logout-confirm').onclick = performLogout;
     initNotificationCenter();
     initTheme();
     $('modal-backdrop').onclick = closeModals;

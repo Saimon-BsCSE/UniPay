@@ -2646,6 +2646,29 @@
     </div>
   </div>
 
+  <!-- Logout confirmation — shared by every role, since the logout button lives
+       in the common topbar. The name is filled in at open time so the user can
+       see which account they are about to leave. -->
+  <div id="modal-logout" class="hidden modal max-w-md" role="dialog" aria-modal="true"
+    aria-labelledby="logout-modal-title" aria-describedby="logout-modal-desc">
+    <div class="flex items-start gap-3.5">
+      <div class="shrink-0 w-11 h-11 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center text-xl">
+        ⏻
+      </div>
+      <div class="min-w-0">
+        <h3 id="logout-modal-title" class="font-extrabold text-lg text-slate-900">Log out of UniPay?</h3>
+        <p id="logout-modal-desc" class="text-sm text-slate-500 mt-1">
+          <span id="logout-user-label" class="font-bold text-slate-700"></span>
+          will be signed out on this device. You'll need your ID and password to sign back in.
+        </p>
+      </div>
+    </div>
+    <div class="flex gap-2 pt-4 mt-4 border-t border-slate-100">
+      <button id="btn-logout-cancel" type="button" class="btn-ghost flex-1">Cancel</button>
+      <button id="btn-logout-confirm" type="button" class="btn-danger flex-1">Log out</button>
+    </div>
+  </div>
+
   <!-- Toasts -->
   <div id="toasts" class="fixed top-4 right-4 z-50 space-y-2 w-80"></div>
 
